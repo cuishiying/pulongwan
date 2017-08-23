@@ -1,0 +1,22 @@
+.row{
+    display: flex;
+}
+.nav_left{
+    background-color: #32323c;
+    width: 12%;
+}
+.box_right{
+    background-color: #f9f9f9;
+    overflow-y: scroll;
+    width: 88%;
+}
+
+.left_list a{display: block; color: #b9b9b9;width: 65%;height: 1.05rem;line-height: 1.08rem;padding-left:5%;font-size: 13px;position: relative;}
+.left_list_titB{background-size:0.35rem 0.35rem;background-repeat: no-repeat;background-position: 17% center;display: inline-block;background-repeat: no-repeat;}
+
+.page-header>h3{
+    text-align: center;
+}
+.table th,td{
+    text-align: center;
+}

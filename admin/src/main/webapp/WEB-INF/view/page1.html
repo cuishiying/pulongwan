@@ -1,0 +1,149 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>list</title>
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}">
+    <script th:src="@{/static/js/jquery.min.js}"></script>
+    <script th:src="@{/static/js/bootstrap.min.js}"></script>
+    <script th:src="@{/static/js/global.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/global.css}">
+</head>
+<body>
+    <div class="container-fluid">
+        <div>
+            <div class="row clearfix">
+
+                <div class="column nav_left">
+                    <nav th:replace="common/fragment :: nav-left"></nav>
+                </div>
+
+                <div class="column box_right">
+                    <nav th:replace="common/fragment :: nav-header"></nav>
+
+                    <blockquote>
+                        <p>
+                            1号风机监控
+                        </p>
+                    </blockquote>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>
+                                监控项
+                            </th>
+                            <th>
+                                监测数据
+                            </th>
+                            <th>
+                                状态
+                            </th>
+                            <th>
+                                操作
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="success" th:each="item:${topicDetail}">
+                            <td th:text="${item.key}">
+                                前轴温
+                            </td>
+                            <td th:text="${item.value}" class="topic_value">
+                                0℃
+                            </td>
+                            <td>
+                                正常
+                            </td>
+                            <td>
+                                <a th:href="@{/chart/1}">详情</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts placed at the end of the document so the pages load faster -->
+    <script th:src="@{/static/js/jquery-1.7.2.min.js}"></script>
+    <script th:src="@{/static/js/mqttws31.js}"></script>
+
+    <script type="text/javascript" th:inline="javascript">
+        var topic= /*[[${topic.topic}]]*/;
+        $(document).ready(function(){
+            if( !window.WebSocket) {
+                $("#connect").html("\
+                <h1>请更换浏览器!</h1>\
+                <p>\
+                您的浏览器不支持WebSockets. 该页面无法显示.<br>\
+                请使用支持WebSockets的浏览器(WebKit or Google Chrome).\
+                </p>\
+            ");
+            } else {
+
+                var client, destination;
+                $(function () {
+                    var host = "localhost";
+                    var port = "61623";
+                    var clientId = "example";
+                    var user = "admin";
+                    var password = "password";
+
+                    destination = topic;
+
+
+                    client = new Messaging.Client(host, Number(port), clientId);
+
+                    client.onConnect = onConnect;
+
+                    client.onMessageArrived = onMessageArrived;
+                    client.onConnectionLost = onConnectionLost;
+
+                    client.connect({
+                        userName:user,
+                        password:password,
+                        onSuccess:onConnect,
+                        onFailure:onFailure
+                    });
+                    return false;
+                })
+
+                // the client is notified when it is connected to the server.
+                var onConnect = function(frame) {
+                    debug("connected to MQTT");
+                    client.subscribe(destination);
+                };
+
+                // this allows to display debug logs directly on the web page
+                var debug = function(str) {
+                    console.log(str);
+                };
+
+                function onFailure(failure) {
+                    debug("failure");
+                    debug(failure.errorMessage);
+                }
+
+                function onMessageArrived(message) {
+                    debug(message.payloadString);
+                    $(".topic_value").html(message.payloadString)
+                }
+
+                function onConnectionLost(responseObject) {
+                    if (responseObject.errorCode !== 0) {
+                        debug(client.clientId + ": " + responseObject.errorCode + "\n");
+                    }
+                }
+                window.onunload = function() {
+                    console.log("disconnect");
+                    client.disconnect();
+                };
+
+
+            }
+        });
+    </script>
+</body>
+</html>

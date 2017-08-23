@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>list</title>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        .row{
+            height: 40px;
+            background-color: #f7f7f9;
+            display: flex;
+            justify-content:center;
+            align-items:Center;
+            border-bottom: 1px solid #bbbbbb;
+        }
+        .row img{
+            height: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container-fluid">
+        <div th:each="topic:${page.content}">
+            <div class="row"  th:id="${topic.id}" onclick="javascript:location.href = ctx + 'detail/'+this.id">
+                <div class="col-xs-2">
+                    <img th:src="@{/static/img/integral.png}" >
+                </div>
+                <div class="col-xs-8" th:text="${topic.monitorName}">content</div>
+                <div class="col-xs-2 text-right">
+                    <img th:src="@{/static/img/att_right.png}" >
+                </div>
+            </div>
+        </div>
+    </div>
+<script type="text/javascript" th:inline="javascript">
+    var ctx = /*[[@{/}]]*/;
+</script>
+</body>
+</html>

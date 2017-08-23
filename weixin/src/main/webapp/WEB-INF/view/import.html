@@ -1,0 +1,106 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>货品档案</title>
+
+
+
+    <!--图标样式-->
+
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/bootstrap.min.css}" />
+    <link th:href="@{/static/css/index.css}" rel="stylesheet">
+    <link th:href="@{/static/css/jquery.datetimepicker.css}" rel="stylesheet">
+
+
+
+    <!--主要样式-->
+
+    <script type="text/javascript" th:src="@{/static/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/bootstrap.min.js}"></script>
+    <style type="text/css">
+        .cl:after,.clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden}.cl,.clearfix{zoom:1}
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container-fluid" style="margin-top: 20px">
+        <div class="navbar-header">
+            <button type="button" class="btn btn-primary importGoods">导入</button>
+            <form id="uploadForm" enctype="multipart/form-data" method="post" style="display: none">
+                <input id="upfile" type="file" name="upfile" >
+            </form>
+        </div>
+    </div>
+
+    <script th:src="@{/static/utils/httpUtils.js}"></script>
+    <script th:src="@{/static/js/jquery.form.js}"></script>
+    <script th:src="@{/static/js/jquery.datetimepicker.full.js}"></script>
+
+    <script type="text/javascript" th:inline="javascript">
+
+        var ctx = /*[[@{/}]]*/;
+
+        $('.date').datetimepicker({
+            lang:"ch",
+            format:'Y-m-d',
+            timepicker:false,
+            todayButton:true
+        });
+
+
+        //导入excel
+        $(".importGoods").bind("click",function (e) {
+            $(this).next().find("input[type='file']").trigger("click").unbind("change").bind("change",function () {
+                if (!this.value) return;
+                if(checkExcel()){
+                    $(this).parent().ajaxSubmit({
+                        url: ctx + "index/import",
+                        type: "post",
+                        beforeSend: function() {
+                            console.log("准备上传");
+                        },
+                        success:function (result) {
+                            if (result.success){
+                                alert("上传成功");
+//                                history.go(0);
+                            }else{
+                                alert(result.message);
+                            }
+                        }, error: function(error) {
+                            alert("出错啦");
+                        }
+                    })
+                }
+
+            })
+        })
+        //JS校验form表单信息
+        function checkExcel(){
+            var fileDir = $("#upfile").val();
+            var suffix = fileDir.substr(fileDir.lastIndexOf("."));
+            console.log(suffix);
+            if("" == fileDir){
+                alert("选择需要导入的Excel文件！");
+                return false;
+            }
+            if(".XLS" != suffix && ".XLSX" != suffix && ".xls" != suffix && ".xlsx" != suffix){
+                alert("选择Excel格式的文件导入！");
+                return false;
+            }
+            return true;
+        }
+    </script>
+
+
+</body>
+
+</html>

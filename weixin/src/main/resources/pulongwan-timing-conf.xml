@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+      
+      <!-- Scheduler包含一个Trigger列表，每个Trigger表示一个作业 -->
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<!--QuartzScheduler 延时启动，/秒，应用启动后 QuartzScheduler 再启动 -->
+		<property name="startupDelay" value="60" />
+		<!-- 普通触发器：触发器列表，（可以配置多个任务） -->
+		<property name="triggers">
+			<list>
+				<ref bean="userSourceTimingTrigger" /><!-- 定时任务 -->
+			</list>
+		</property>
+		<property name="autoStartup" value="true" />
+	</bean>
+	<!-- Trigger的配置 (用户来源)-->
+	<bean id="userSourceTimingTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="userSourceTimingJobDetail" />
+		<property name="cronExpression" value="0 15 10 L * ?" />
+		<!-- 每月最后一天的10点15分触发  -->
+	</bean>
+	<!-- JobDetail的配置(用户来源) -->
+	<bean id="userSourceTimingJobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="recordsCenterTimingJob" />
+		<property name="targetMethod" value="userSourceTiming" />
+		<property name="concurrent" value="true" />
+		<!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+	</bean>
+	<!-- 业务类的配置 -->
+	<bean id="recordsCenterTimingJob" class="com.shanglan.pulongwan.timetask.RecordsCenterTiming"/>
+</beans>

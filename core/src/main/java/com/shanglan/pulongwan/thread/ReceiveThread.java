@@ -25,6 +25,10 @@ public class ReceiveThread extends Thread {
     private byte[] req = null;
     private Queue queue;
 
+    private DatagramSocket socket = null;
+    private DatagramPacket packet = null;
+    DatagramSocket sendsocket;
+
     public ReceiveThread(){}
 
     public ReceiveThread(Lock lock) {
@@ -33,6 +37,15 @@ public class ReceiveThread extends Thread {
     public ReceiveThread(Lock lock,Queue queue) {
         this.lock = lock;
         this.queue = queue;
+        try {
+            socket = new DatagramSocket(Constance.getSocket_port());
+            sendsocket = new DatagramSocket();
+
+            byte[] buf = new byte[60];
+            packet = new DatagramPacket(buf, buf.length);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -44,49 +57,44 @@ public class ReceiveThread extends Thread {
     @Override
     public void run() {
         System.out.println("====ReceiveThread_start===");
-        nettyUdpServerRun(Constance.getSocket_port());
 
-    }
+        try{
+            while (true){
+                socket.receive(packet);
+//                send(packet);
+                queue.put(packet);
+                if(lock.isLock()){
+                    queue.copyData();
+                    lock.setLock(false);
 
-    /**
-     * netty接收udp数据
-     * @param port
-     */
-    public void nettyUdpServerRun(int port){
-        EventLoopGroup group = new NioEventLoopGroup();
-        try {
-            Bootstrap b = new Bootstrap();
-            b.group(group).channel(NioDatagramChannel.class)
-                    .option(ChannelOption.SO_BROADCAST,true)
-                    .handler(new UdpServerHandler());
-
-            b.bind(port).sync().channel().closeFuture().await();
+                }else{
+                    try {
+                        Thread.sleep(0);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (!Constance.isReceiveDataFlat()){
+                    Thread.interrupted();
+                    break;
+                }
+            }
         }catch (Exception e){
+            Thread.interrupted();
             e.printStackTrace();
         }
-        finally {
-            group.shutdownGracefully();
-        }
+
     }
 
-    class UdpServerHandler extends SimpleChannelInboundHandler<io.netty.channel.socket.DatagramPacket>{
 
-        @Override
-        protected void messageReceived(ChannelHandlerContext channelHandlerContext, io.netty.channel.socket.DatagramPacket datagramPacket) throws Exception {
-            ByteBuf content = datagramPacket.content();
-            req = new byte[content.readableBytes()];
-            content.readBytes(req);
-            queue.put(req);
-            if(lock.isLock()){
-                queue.copyData();
-                lock.setLock(false);
-
-            }
-        }
-        @Override
-        public void exceptionCaught(ChannelHandlerContext ctx,Throwable cause)throws Exception{
-            ctx.close();
-            cause.printStackTrace();
-        }
+    /**
+     * 测试数据
+     * @param packet
+     * @throws Exception
+     */
+    public void send(DatagramPacket packet) throws Exception {
+        byte[] buf = packet.getData();
+        DatagramPacket packet1 = new DatagramPacket(buf, packet.getLength(), InetAddress.getByName("139.129.227.31"), 10000);
+        sendsocket.send(packet1);
     }
 }

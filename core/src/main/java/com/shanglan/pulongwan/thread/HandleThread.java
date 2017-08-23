@@ -70,7 +70,7 @@ public class HandleThread extends Thread {
                 }
             }
         }catch (Exception e){
-            Thread.interrupted();
+//            Thread.interrupted();
             e.printStackTrace();
         }
     }

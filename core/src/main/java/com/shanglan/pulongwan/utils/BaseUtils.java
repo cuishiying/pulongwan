@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class BaseUtils {
 
-    private static boolean logTag = true;
+    private static boolean logTag = false;
     private static Gson gson;
 
     /**

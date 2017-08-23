@@ -13,6 +13,7 @@ import java.util.Map;
 public class Constance {
     private static boolean receiveDataFlat = true;
     private static boolean handlerDataFlat = true;
+//    private static String apollo_host = "tcp://localhost:61613";
     private static String apollo_host = "tcp://10.38.8.201:61613";
     private static String apollo_clientid = "pulongwan_clientid";
     private static int socket_port = 10000;

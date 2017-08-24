@@ -5,7 +5,10 @@ package com.shanglan.pulongwan.mqtt; /**
  * 2017年2月10日下午18:04:07
  */
 
-import org.eclipse.paho.client.mqttv3.*;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 /**
  * 发布消息的回调类
@@ -24,15 +27,15 @@ import org.eclipse.paho.client.mqttv3.*;
  *  由 MqttClient.connect 激活此回调。
  *
  */
-public class PushCallback implements MqttCallback {
+public class PullCallback implements MqttCallback {
 
-    private ServerMQTT serverMQTT;
+    private ClientMQTT clientMQTT;
     private int count = 0;
 
 
 
-    public PushCallback(ServerMQTT serverMQTT) throws MqttException {
-        this.serverMQTT = serverMQTT;
+    public PullCallback(ClientMQTT serverMQTT) throws MqttException {
+        this.clientMQTT = serverMQTT;
     }
 
     @Override
@@ -43,8 +46,8 @@ public class PushCallback implements MqttCallback {
         try{
             while (count<10){
                 long currentTime = System.currentTimeMillis();
-                if(!serverMQTT.isConnected()){
-                    serverMQTT.reconnect();
+                if(!clientMQTT.getClient().isConnected()){
+                    clientMQTT.reconnect();
                 }
                 long now = System.currentTimeMillis();
                 if((currentTime + timeout) < now){
@@ -61,9 +64,9 @@ public class PushCallback implements MqttCallback {
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
         // subscribe后得到的消息会执行到这里面
-//        System.out.println("接收消息主题 : " + topic);
-//        System.out.println("接收消息Qos : " + message.getQos());
-//        System.out.println("接收消息内容 : " + new String(message.getPayload(),"UTF-8"));
+        System.out.println("接收消息主题 : " + topic);
+        System.out.println("接收消息Qos : " + message.getQos());
+        System.out.println("接收消息内容 : " + new String(message.getPayload(),"UTF-8"));
     }
 
     @Override

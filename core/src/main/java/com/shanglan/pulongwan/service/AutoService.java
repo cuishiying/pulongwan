@@ -29,6 +29,8 @@ public class AutoService {
     private FTPService ftpService;
     @Autowired
     private ManageService manageService;
+    @Autowired
+    private ClientService clientService;
 
     ThreadUtils threadUtils = new ThreadUtils();
 
@@ -83,6 +85,7 @@ public class AutoService {
         MqttUtils.setOnSaveMqttDataListener(new OnSaveMqttDataListener() {
             @Override
             public void save(String topic, String data) {
+                System.out.println("saveMqttData=topic="+topic+"=msg="+data);
                 manageService.handleData(topic,data);
             }
         });

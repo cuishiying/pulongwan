@@ -3,10 +3,13 @@ package com.shanglan.pulongwan.controller;
 import com.shanglan.pulongwan.base.AjaxResponse;
 import com.shanglan.pulongwan.mqtt.ClientMQTT;
 import com.shanglan.pulongwan.service.ClientService;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * Created by cuishiying on 2017/5/10.
@@ -24,9 +27,9 @@ public class ClientController {
      * @return
      */
     @RequestMapping(path = "/start",method = RequestMethod.GET)
-    public AjaxResponse startClientSubscribe(){
-        AjaxResponse ajaxResponse = clientService.startClientSubscribe();
-        return ajaxResponse;
+    public AjaxResponse startClientSubscribe() throws MqttException, UnsupportedEncodingException {
+        clientService.startClientSubscribe();
+        return null;
     }
 
     /**
@@ -34,9 +37,9 @@ public class ClientController {
      * @return
      */
     @RequestMapping(path = "/stop",method = RequestMethod.GET)
-    public AjaxResponse stopClientSubscribe(){
-        AjaxResponse ajaxResponse = clientService.stopClientSubscribe();
-        return ajaxResponse;
+    public AjaxResponse stopClientSubscribe() throws MqttException, UnsupportedEncodingException {
+        clientService.stopClientSubscribe();
+        return null;
     }
 
 

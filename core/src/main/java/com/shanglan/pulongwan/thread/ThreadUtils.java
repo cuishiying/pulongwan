@@ -23,6 +23,7 @@ public class ThreadUtils {
 
     private ReceiveThread receiveThread;
     private HandleThread handleThread;
+    private SaveThread saveThread;
 
     private Lock lock = new Lock();
     private Queue queue = new Queue();
@@ -31,13 +32,16 @@ public class ThreadUtils {
         executor = new SimpleAsyncTaskExecutor("udp");
         receiveThread = new ReceiveThread(lock,queue);
         handleThread = new HandleThread(lock,queue);
+        saveThread = new SaveThread();
         executor.submit(receiveThread);
         executor.submit(handleThread);
+        executor.submit(saveThread);
     }
 
     public void stopThread() throws MqttException {
         this.stopHandler();
         this.stopReceive();
+        this.stopSave();
     }
 
     public void stopReceive(){
@@ -48,9 +52,15 @@ public class ThreadUtils {
     }
 
     public void stopHandler() throws MqttException {
+        Constance.setHandlerDataFlat(false);
         if(null!=handleThread){
             MqttUtils.closeServer();
             handleThread.interrupt();
+        }
+    }
+    public void stopSave() throws MqttException {
+        if(null!=saveThread){
+            saveThread.interrupt();
         }
     }
 

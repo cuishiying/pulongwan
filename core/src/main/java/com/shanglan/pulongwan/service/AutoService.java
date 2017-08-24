@@ -63,8 +63,6 @@ public class AutoService {
     @PostConstruct
     public void connectMqtt(){
         threadUtils.start();
-//        clientService.startClientSubscribe();
-
     }
 
     /**
@@ -75,7 +73,6 @@ public class AutoService {
     public void closeThread() throws MqttException {
         System.out.println("====closeThread====");
         threadUtils.stopThread();
-//        clientService.stopClientSubscribe();
     }
 
     /**
@@ -86,7 +83,7 @@ public class AutoService {
         MqttUtils.setOnSaveMqttDataListener(new OnSaveMqttDataListener() {
             @Override
             public void save(String topic, String data) {
-//                manageService.handleData(topic,data);
+                manageService.handleData(topic,data);
             }
         });
     }

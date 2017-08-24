@@ -2,10 +2,9 @@ package com.shanglan.pulongwan.service;
 
 import com.shanglan.pulongwan.base.AjaxResponse;
 import com.shanglan.pulongwan.dto.QueryDTO;
-import com.shanglan.pulongwan.entity.Topic;
+import com.shanglan.pulongwan.entity.Field;
 import com.shanglan.pulongwan.entity.TopicDetail;
 import com.shanglan.pulongwan.repository.DataRepository;
-import com.shanglan.pulongwan.repository.ManageRepository;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -28,11 +27,15 @@ public class DbService {
     @Autowired
     private DataRepository dataRepository;
     @Autowired
-    private ManageRepository manageRepository;
+    private FieldService fieldService;
 
     public AjaxResponse delOldData(LocalDateTime delTime){
         int i = dataRepository.delOldData(delTime);
         return AjaxResponse.success(i);
+    }
+
+    public void delAll(){
+        dataRepository.deleteAllInBatch();
     }
 
     /**
@@ -41,16 +44,30 @@ public class DbService {
      * @return
      */
     public List<TopicDetail> findHistoryData(Integer id, QueryDTO queryDTO){
-        Topic topic = manageRepository.findById(id);
-        queryDTO.setTopic(topic.getTopic());
-        if(queryDTO.getQueryDate()==null){
-            queryDTO.setQueryDate(LocalDate.now());
-        }
-        Specification<TopicDetail> spec = this.getWhereClause(queryDTO);
-        List<TopicDetail> list = dataRepository.findAll(spec);
+//        Field field = fieldService.findById(id);
+//        queryDTO.setTopic(field.getDescriber());
+//        if(queryDTO.getQueryDate()==null){
+//            queryDTO.setQueryDate(LocalDate.now());
+//        }
+//        Specification<TopicDetail> spec = this.getWhereClause(queryDTO);
+//        List<TopicDetail> list = dataRepository.findAll(spec);
+//        return list;
+        List<TopicDetail> list = queryHistory(id, queryDTO);
         return list;
     }
 
+    public List<TopicDetail> queryHistory(Integer id, QueryDTO queryDTO){
+        Field field = fieldService.findById(id);
+        if(queryDTO.getQueryDate()==null){
+            queryDTO.setQueryDate(LocalDate.now());
+        }
+        LocalDateTime begin = LocalDateTime.of(queryDTO.getQueryDate(), LocalTime.MIN);
+        LocalDateTime end = LocalDateTime.of(queryDTO.getQueryDate(), LocalTime.MAX);
+
+        List<TopicDetail> list = dataRepository.queryHistoryData(field.getDescriber(), begin, end);
+        return list;
+
+    }
 
     /**
      * 查询条件
@@ -71,7 +88,7 @@ public class DbService {
                 LocalDateTime begin = LocalDateTime.of(queryVo.getQueryDate(), LocalTime.MIN);
                 LocalDateTime end = LocalDateTime.of(queryVo.getQueryDate(), LocalTime.MAX);
                 Predicate date = cb.and(cb.greaterThanOrEqualTo(root.<LocalDateTime>get("delTime"), begin), cb.lessThanOrEqualTo(root.<LocalDateTime>get("delTime"), end));
-                predicate.add(date);
+                predicate.add(cb.greaterThanOrEqualTo(root.<LocalDateTime>get("delTime"), begin));
             }
             return query.where(predicate.toArray(new Predicate[predicate.size()])).getRestriction();
         };

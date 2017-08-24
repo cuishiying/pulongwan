@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Created by cuishiying on 2017/5/10.
@@ -20,5 +21,8 @@ public interface DataRepository extends JpaRepository<TopicDetail,Integer>,JpaSp
     @Modifying
     @Query("DELETE FROM TopicDetail t WHERE t.delTime < ?1")
     int delOldData(LocalDateTime delTime);
+
+    @Query("SELECT t FROM TopicDetail t WHERE t.topic = ?1 and t.delTime > ?2 and t.delTime < ?3")
+    List<TopicDetail> queryHistoryData(String topic, LocalDateTime startTime, LocalDateTime endTime);
 
 }

@@ -1,6 +1,7 @@
 package com.shanglan.monitor;
 
 import com.shanglan.pulongwan.base.AjaxResponse;
+import com.shanglan.pulongwan.service.DbService;
 import com.shanglan.pulongwan.service.FTPService;
 import com.shanglan.pulongwan.utils.DecodeUtils;
 import org.junit.Test;
@@ -29,6 +30,8 @@ public class TestController {
 
     @Autowired
     private FTPService FTPService;
+    @Autowired
+    private DbService dbService;
 
     @Test
     public void test0() throws Exception{
@@ -86,6 +89,7 @@ public class TestController {
     }
     @Test
     public void test4() throws Exception{
+        dbService.delAll();
     }
 
 }

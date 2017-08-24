@@ -20,8 +20,10 @@
 		<property name="jobDetail" ref="userSourceTimingJobDetail" />
 		<!--<property name="cronExpression" value="* 0/1 * * * ?" />-->
 		<!-- 每s触发一次  -->
-		<property name="cronExpression" value="0 15 10 L * ?" />
+		<!--<property name="cronExpression" value="0 15 10 L * ?" />-->
 		<!-- 每月最后一天的10点15分触发  -->
+		<property name="cronExpression" value="0 45 23 * * ?" />
+		<!-- 每天的10点15分触发  -->
 	</bean>
 	<!-- JobDetail的配置(用户来源) -->
 	<bean id="userSourceTimingJobDetail"

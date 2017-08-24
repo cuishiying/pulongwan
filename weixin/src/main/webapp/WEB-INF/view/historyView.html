@@ -8,6 +8,8 @@
     <script th:src="@{/static/js/jquery.min.js}"></script>
     <script th:src="@{/static/js/bootstrap.min.js}"></script>
     <script th:src="@{/static/js/echarts.min.js}"></script>
+    <link th:href="@{/static/css/jquery.datetimepicker.css}" rel="stylesheet">
+
     <style type="text/css">
         .table th, .table td {
             text-align: center;
@@ -27,16 +29,23 @@
             background-color: #ffffff;
             padding-bottom: 70px;
         }
+        .head{
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .cal_input1{
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
 
     <div class="container-fluid">
-        <div>
+        <div class="head">
             <form th:action="@{/history/}+${topicId}" method="get">
-                <div class="fr">
-                    <input class="time_input cal_input1" type="text" placeholder="选择日期" name="queryDate" th:value="${queryDTO.queryDate?.toString()}" />
-                    <input class="search_tit" type="submit" value="搜索" />
+                <div class="fr  text-center">
+                    <input class="form-control time_input cal_input1  text-center" type="text" placeholder="选择日期" name="queryDate" th:value="${queryDTO.queryDate?.toString()}" />
+                    <input class="search_tit btn-success" type="submit" value="查询" />
                 </div>
             </form>
         </div>
@@ -49,10 +58,22 @@
     <script th:src="@{/static/js/jquery-1.7.2.min.js}"></script>
     <script th:src="@{/static/js/paho-mqtt.js}"></script>
     <script th:src="@{/static/config/config.js}"></script>
+    <script th:src="@{/static/js/jquery.js}"></script>
+    <script th:src="@{/static/js/jquery.datetimepicker.full.js}"></script>
 
-<script type="text/javascript" th:inline="javascript">
+
+    <script type="text/javascript" th:inline="javascript">
     var ctx = /*[[@{/}]]*/;
     var historyData = /*[[${historyData}]]*/;
+
+    $('.time_input').datetimepicker({
+        lang:"ch", //语言选择中文 注：旧版本 新版方法：$.datetimepicker.setLocale('ch');
+        format:"Y-m-d",
+        timepicker:false,
+        yearStart:2000,
+        yearEnd:2050,
+        todayButton:true
+    });
 
     $(document).ready(function() {
         

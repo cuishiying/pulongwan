@@ -1,8 +1,11 @@
 package com.shanglan.pulongwan.controller;
 
 import com.shanglan.pulongwan.base.AjaxResponse;
+import com.shanglan.pulongwan.dto.QueryDTO;
 import com.shanglan.pulongwan.entity.Field;
 import com.shanglan.pulongwan.entity.Topic;
+import com.shanglan.pulongwan.entity.TopicDetail;
+import com.shanglan.pulongwan.service.DbService;
 import com.shanglan.pulongwan.service.FieldService;
 import com.shanglan.pulongwan.service.ManageService;
 import com.shanglan.pulongwan.service.AutoService;
@@ -30,6 +33,9 @@ public class ManageController {
 
     @Autowired
     private AutoService autoService;
+
+    @Autowired
+    private DbService dbService;
 
     @Autowired
     private FieldService fieldService;
@@ -87,15 +93,15 @@ public class ManageController {
      * @param queryDTO
      * @return
      */
-//    @RequestMapping(path = "/history/{id}",method = RequestMethod.GET)
-//    public ModelAndView historyView(@PathVariable("id") Integer id,QueryDTO queryDTO){
-//        ModelAndView model = new ModelAndView("historyView");
-//        List<TopicDetail> historyData = dbService.findHistoryData(id, queryDTO);
-//        model.addObject("topicId",id);
-//        model.addObject("queryDTO",queryDTO);
-//        model.addObject("historyData",historyData);
-//        return model;
-//    }
+    @RequestMapping(path = "/history/{id}",method = RequestMethod.GET)
+    public ModelAndView historyView(@PathVariable("id") Integer id,QueryDTO queryDTO){
+        ModelAndView model = new ModelAndView("historyView");
+        List<TopicDetail> historyData = dbService.findHistoryData(id, queryDTO);
+        model.addObject("topicId",id);
+        model.addObject("queryDTO",queryDTO);
+        model.addObject("historyData",historyData);
+        return model;
+    }
 
     /**
      * 主题详情(展示图表详情页)

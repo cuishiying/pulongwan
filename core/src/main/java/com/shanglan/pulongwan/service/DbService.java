@@ -52,6 +52,7 @@ public class DbService {
 //        Specification<TopicDetail> spec = this.getWhereClause(queryDTO);
 //        List<TopicDetail> list = dataRepository.findAll(spec);
 //        return list;
+
         List<TopicDetail> list = queryHistory(id, queryDTO);
         return list;
     }

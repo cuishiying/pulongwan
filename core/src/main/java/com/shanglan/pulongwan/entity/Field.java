@@ -19,7 +19,7 @@ public class Field extends BaseEntity{
     private Integer dataCount;//信息数
     private String functionCode;//功能码
     private String srcValue;//源码值
-    private Integer telemetryValue;//遥测值
+    private Float telemetryValue;//遥测值
     private Integer topTopic; //一级主题
     private Integer warmingValue;//警戒值
 
@@ -79,11 +79,11 @@ public class Field extends BaseEntity{
         this.srcValue = srcValue;
     }
 
-    public Integer getTelemetryValue() {
+    public Float getTelemetryValue() {
         return telemetryValue;
     }
 
-    public void setTelemetryValue(Integer telemetryValue) {
+    public void setTelemetryValue(Float telemetryValue) {
         this.telemetryValue = telemetryValue;
     }
 

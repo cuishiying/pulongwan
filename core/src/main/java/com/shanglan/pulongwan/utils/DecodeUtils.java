@@ -92,6 +92,10 @@ public class DecodeUtils {
         int j = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getShort();
         return j;
     }
+    public static float decodeHex2Float(byte[] bytes){
+        float j = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getShort();
+        return j;
+    }
 
     /**
      * 封装数据
@@ -110,35 +114,41 @@ public class DecodeUtils {
         Field f1 = null;
         Field f2 = null;
         String desc = null;
+        Float radio;
 
         desc = Constance.getFieldConfig(byte2Hex(p0)*2+"");
+        radio = Constance.getRadioConfig(byte2Hex(p0)*2+"");   //系数
         if(null!= desc){
             f1 = new Field();
             b[0] = p1;
             b[1] = p2;
             String s = bytesToHexString(b, 2);
-            int i = decodeHex2Int(b);
+            float i = decodeHex2Float(b);
+
             f1.setFunctionCode(byte2HexString(p0));//功能码
             f1.setTelemetrySignal(byte2Hex(p0)*2+"");//遥测号
             f1.setSrcValue(s);//源码值
 
-            f1.setTelemetryValue(i);//遥测值
+            f1.setTelemetryValue(i*radio);//遥测值
             f1.setDescriber(desc);//描述
             list.add(f1);
         }
 
         desc = Constance.getFieldConfig(byte2Hex(p0)*2+1+"");
+        radio = Constance.getRadioConfig(byte2Hex(p0)*2+1+"");
+
         if(null!= desc){
             f2 = new Field();
             b[0] = p3;
             b[1] = p4;
             String s1 = bytesToHexString(b, 2);
-            int i1 = decodeHex2Int(b);
+            float i1 = decodeHex2Float(b);
+
             f2.setFunctionCode(byte2HexString(p0));
             f2.setTelemetrySignal(byte2Hex(p0)*2+1+"");
             f2.setSrcValue(s1);
 
-            f2.setTelemetryValue(i1);
+            f2.setTelemetryValue(i1*radio); //加系数结果
             f2.setDescriber(desc);
             list.add(f2);
         }

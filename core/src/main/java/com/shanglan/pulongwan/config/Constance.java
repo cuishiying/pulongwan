@@ -19,6 +19,7 @@ public class Constance {
     private static int socket_port = 10000;
 
     private static HashMap fieldConfig = new HashMap();
+    private static HashMap radioConfig = new HashMap();
 
     /**
      * topic  hash映射表
@@ -27,6 +28,7 @@ public class Constance {
     public static void setConfig(List<Field> list){
         for(int i=0;i<list.size();i++){
             fieldConfig.put(list.get(i).getTelemetrySignal(),list.get(i).getDescriber());
+            radioConfig.put(list.get(i).getTelemetrySignal(),list.get(i).getRatio());
         }
     }
     public static HashMap getFieldConfig(){
@@ -81,5 +83,14 @@ public class Constance {
     public static String getFieldConfig(String key){
         String value = (String) fieldConfig.get(key);
         return value;
+    }
+
+    public static Float getRadioConfig(String key) {
+        Float value = (Float) radioConfig.get(key);
+        return value;
+    }
+
+    public static void setRadioConfig(HashMap radioConfig) {
+        Constance.radioConfig = radioConfig;
     }
 }

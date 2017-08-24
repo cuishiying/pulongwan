@@ -21,7 +21,7 @@ public class MqttUtils {
             if(data!=null&&data.size()>0){
                 for(int i=0;i<data.size();i++){
                     String topic = data.get(i).getDescriber();
-                    Integer message = data.get(i).getTelemetryValue();
+                    Float message = data.get(i).getTelemetryValue();
                     if(StringUtils.isEmpty(topic)|| Strings.containsAny(topic, "#+")){
                         continue;
                     }

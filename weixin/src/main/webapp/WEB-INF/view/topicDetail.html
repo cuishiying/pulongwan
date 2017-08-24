@@ -104,7 +104,7 @@
     function onMessageArrived(message) {
         var topic = message.destinationName;
         var payload = message.payloadString;
-        console.log("订阅消息:==== "+topic+"===="+payload);
+//        console.log("订阅消息:==== "+topic+"===="+payload);
         $(".list").find(".item span[value='"+topic+"']").html(payload);
 
         var warmingValue = $(".list").find(".item span[value='"+topic+"']").attr("warmingValue");

@@ -18,7 +18,7 @@ public interface DataRepository extends JpaRepository<TopicDetail,Integer>,JpaSp
 
     //删除指定日期前数据
     @Modifying
-    @Query("DELETE FROM TopicDetail WHERE delTime < ?1")
+    @Query("DELETE FROM TopicDetail t WHERE t.delTime < ?1")
     int delOldData(LocalDateTime delTime);
 
 }

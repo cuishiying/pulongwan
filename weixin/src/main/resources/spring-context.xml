@@ -26,12 +26,8 @@
 		http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd"
 	   default-lazy-init="true">
 
-	<!--<task:executor id="executor" pool-size="15" />-->
-	<!--<task:scheduler id="scheduler" pool-size="30" />-->
-	<!--<task:annotation-driven executor="executor" scheduler="scheduler" />-->
-	<!--<context:annotation-config />-->
 
-	<import resource="pulongwan-timing-conf.xml"/>
+	<!--<import resource="pulongwan-timing-conf.xml"/>-->
 	<context:component-scan base-package="com.shanglan.pulongwan"/>
 	<context:property-placeholder location="classpath:jdbc.properties"/>
 	<bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">

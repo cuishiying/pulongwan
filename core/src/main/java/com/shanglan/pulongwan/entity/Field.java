@@ -14,6 +14,7 @@ public class Field extends BaseEntity{
 
     private String telemetrySignal;//遥测号
     private String describer;//描述
+    private String type;//类型
     private Float ratio;//系数
     private String frameType;//帧类别
     private Integer dataCount;//信息数
@@ -37,6 +38,14 @@ public class Field extends BaseEntity{
 
     public void setDescriber(String describer) {
         this.describer = describer;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Float getRatio() {

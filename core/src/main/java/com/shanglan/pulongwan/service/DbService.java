@@ -7,6 +7,9 @@ import com.shanglan.pulongwan.entity.TopicDetail;
 import com.shanglan.pulongwan.repository.DataRepository;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,15 +47,6 @@ public class DbService {
      * @return
      */
     public List<TopicDetail> findHistoryData(Integer id, QueryDTO queryDTO){
-//        Field field = fieldService.findById(id);
-//        queryDTO.setTopic(field.getDescriber());
-//        if(queryDTO.getQueryDate()==null){
-//            queryDTO.setQueryDate(LocalDate.now());
-//        }
-//        Specification<TopicDetail> spec = this.getWhereClause(queryDTO);
-//        List<TopicDetail> list = dataRepository.findAll(spec);
-//        return list;
-
         List<TopicDetail> list = queryHistory(id, queryDTO);
         return list;
     }
@@ -89,7 +83,7 @@ public class DbService {
                 LocalDateTime begin = LocalDateTime.of(queryVo.getQueryDate(), LocalTime.MIN);
                 LocalDateTime end = LocalDateTime.of(queryVo.getQueryDate(), LocalTime.MAX);
                 Predicate date = cb.and(cb.greaterThanOrEqualTo(root.<LocalDateTime>get("delTime"), begin), cb.lessThanOrEqualTo(root.<LocalDateTime>get("delTime"), end));
-                predicate.add(cb.greaterThanOrEqualTo(root.<LocalDateTime>get("delTime"), begin));
+                predicate.add(date);
             }
             return query.where(predicate.toArray(new Predicate[predicate.size()])).getRestriction();
         };

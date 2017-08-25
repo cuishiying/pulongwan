@@ -53,7 +53,6 @@
           <element id="library" level="project" name="Maven: org.apache.commons:commons-lang3:3.5" />
           <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.8.0" />
           <element id="library" level="project" name="Maven: redis.clients:jedis:2.9.0" />
-          <element id="library" level="project" name="Maven: org.apache.commons:commons-pool2:2.4.2" />
           <element id="library" level="project" name="Maven: mysql:mysql-connector-java:5.1.40" />
           <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-jdbc:8.0.39" />
           <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-juli:8.0.39" />
@@ -88,6 +87,7 @@
           <element id="library" level="project" name="Maven: org.apache.xmlbeans:xmlbeans:2.6.0" />
           <element id="library" level="project" name="Maven: stax:stax-api:1.0.1" />
           <element id="library" level="project" name="Maven: com.github.virtuald:curvesapi:1.04" />
+          <element id="library" level="project" name="Maven: org.apache.commons:commons-pool2:2.4.2" />
         </element>
       </element>
       <element id="directory" name="META-INF">

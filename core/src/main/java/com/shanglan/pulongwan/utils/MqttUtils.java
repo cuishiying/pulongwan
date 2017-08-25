@@ -71,9 +71,6 @@ public class MqttUtils {
         }else{
             ServerMQTT.getInstance().reconnect();
         }
-//        if(null!=onSaveMqttDataListener){
-//            onSaveMqttDataListener.save(topic,data);
-//        }
     }
 
     public static void saveData(String topic,String data){

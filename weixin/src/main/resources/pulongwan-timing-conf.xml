@@ -23,7 +23,7 @@
 		<!--<property name="cronExpression" value="0 15 10 L * ?" />-->
 		<!-- 每月最后一天的10点15分触发  -->
 		<property name="cronExpression" value="0 45 23 * * ?" />
-		<!-- 每天的10点15分触发  -->
+		<!-- 每天的23点45分触发  -->
 	</bean>
 	<!-- JobDetail的配置(用户来源) -->
 	<bean id="userSourceTimingJobDetail"

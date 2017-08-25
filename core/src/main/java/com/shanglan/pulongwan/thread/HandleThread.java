@@ -43,7 +43,6 @@ public class HandleThread extends Thread {
      */
     @Override
     public void run() {
-        System.out.println("====HandleThread_start===");
         queue.setOnHandlerData(new OnHandleDataListener() {
             @Override
             public void handleData(List<Field> data) {
@@ -70,7 +69,6 @@ public class HandleThread extends Thread {
                 }
             }
         }catch (Exception e){
-//            Thread.interrupted();
             e.printStackTrace();
         }
     }

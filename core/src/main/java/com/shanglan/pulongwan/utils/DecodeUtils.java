@@ -5,8 +5,10 @@ import com.shanglan.pulongwan.entity.Field;
 import org.apache.http.util.TextUtils;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +20,8 @@ import java.util.List;
 public class DecodeUtils {
 
     private static StringBuilder stringBuilder = new StringBuilder("");
+    private static DecimalFormat df = new DecimalFormat("#.00");
+
 
     /**
      * 字节数组转16进制字符串
@@ -107,19 +111,19 @@ public class DecodeUtils {
      * @param p5
      * @return
      */
-    public static List<Field> byte2Json(Byte p0,Byte p1,Byte p2,Byte p3,Byte p4,Byte p5){
+    public static List<Field> byte2Json(Byte p0,Byte p1,Byte p2,Byte p3,Byte p4,Byte p5) throws Exception {
 
         byte[] b = new byte[2];
         List<Field> list = new ArrayList<>();
-        Field f1 = null;
-        Field f2 = null;
+        Field f1 = FieldPoolFactory.borrowObject();
+        Field f2 = FieldPoolFactory.borrowObject();
         String desc = null;
         Float radio;
 
         desc = Constance.getFieldConfig(byte2Hex(p0)*2+"");
         radio = Constance.getRadioConfig(byte2Hex(p0)*2+"");   //系数
+
         if(null!= desc){
-            f1 = new Field();
             b[0] = p1;
             b[1] = p2;
             String s = bytesToHexString(b, 2);
@@ -138,7 +142,6 @@ public class DecodeUtils {
         radio = Constance.getRadioConfig(byte2Hex(p0)*2+1+"");
 
         if(null!= desc){
-            f2 = new Field();
             b[0] = p3;
             b[1] = p4;
             String s1 = bytesToHexString(b, 2);
@@ -152,6 +155,18 @@ public class DecodeUtils {
             f2.setDescriber(desc);
             list.add(f2);
         }
+        FieldPoolFactory.returnObject(f1);
+        FieldPoolFactory.returnObject(f2);
         return list;
+    }
+
+    /**
+     * 保留两位小数
+     * @param f
+     * @return
+     */
+    public static float decimalFormat(float f){
+        String format = df.format(f);
+        return Float.parseFloat(format);
     }
 }

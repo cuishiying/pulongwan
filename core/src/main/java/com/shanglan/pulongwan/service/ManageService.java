@@ -5,6 +5,7 @@ import com.shanglan.pulongwan.entity.Topic;
 import com.shanglan.pulongwan.entity.TopicDetail;
 import com.shanglan.pulongwan.repository.DataRepository;
 import com.shanglan.pulongwan.repository.ManageRepository;
+import com.shanglan.pulongwan.utils.TopicDetailPoolFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,8 +29,7 @@ public class ManageService {
     private DataRepository dataRepository;
 
 
-    private List<TopicDetail> tempData = new ArrayList<>();
-    private TopicDetail topicDetail;
+    private List<TopicDetail> tempData = new ArrayList<>(1024);
 
 
     /**
@@ -90,7 +90,6 @@ public class ManageService {
      */
     public AjaxResponse handleData(List<TopicDetail> list){
 
-
         //每分钟存储一次
         if(tempData.size()<60){
             tempData.addAll(list);
@@ -106,23 +105,18 @@ public class ManageService {
 
         return AjaxResponse.success();
     }
-    public AjaxResponse handleData(String topic,String message){
-        topicDetail = new TopicDetail();
-        topicDetail.setTopic(topic);
-        topicDetail.setMonitorValue(message);
-        topicDetail.setDelTime(LocalDateTime.now());
-
-
-        //每分钟存储一次
+    public AjaxResponse handleData(String topic,String message) throws Exception {
+        //每60条数据存储一次
         if(tempData.size()<60){
+            TopicDetail topicDetail = TopicDetailPoolFactory.borrowObject();
+            topicDetail.setTopic(topic);
+            topicDetail.setMonitorValue(message);
+            topicDetail.setDelTime(LocalDateTime.now());
             tempData.add(topicDetail);
+            TopicDetailPoolFactory.returnObject(topicDetail);
+
         }else{
-            long startTime=System.currentTimeMillis();//记录开始时间
             dataRepository.save(tempData);
-            long endTime=System.currentTimeMillis();//记录结束时间
-            float excTime=(float)(endTime-startTime)/1000;
-            System.out.println("执行时间："+excTime+"s");
-            System.out.println("size=="+dataRepository.findAll().size());
             tempData.clear();
         }
 

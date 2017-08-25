@@ -56,8 +56,6 @@ public class ReceiveThread extends Thread {
      */
     @Override
     public void run() {
-        System.out.println("====ReceiveThread_start===");
-
         try{
             while (true){
                 socket.receive(packet);

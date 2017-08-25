@@ -53,6 +53,7 @@
 <script th:src="@{/static/js/jquery-1.7.2.min.js}"></script>
 <script th:src="@{/static/js/paho-mqtt.js}"></script>
 <script th:src="@{/static/config/config.js}"></script>
+<script th:src="@{/static/utils/stringUtils.js}"></script>
 
 <script type="text/javascript" th:inline="javascript">
     var _topic= /*[[${topic.topic}]]*/;
@@ -103,7 +104,7 @@
     };
     function onMessageArrived(message) {
         var topic = message.destinationName;
-        var payload = message.payloadString;
+        var payload = stringUtils.toDecimal2(message.payloadString);
 //        console.log("订阅消息:==== "+topic+"===="+payload);
         $(".list").find(".item span[value='"+topic+"']").html(payload);
 

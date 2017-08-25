@@ -85,7 +85,11 @@ public class AutoService {
         MqttUtils.setOnSaveMqttDataListener(new OnSaveMqttDataListener() {
             @Override
             public void save(String topic, String data) {
-//                manageService.handleData(topic,data);
+                try {
+                    manageService.handleData(topic,data);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

@@ -92,6 +92,10 @@
             <artifactId>poi-ooxml</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.taobao</groupId>
             <artifactId>api</artifactId>
             <version>auto_1452788057542-20160201</version>

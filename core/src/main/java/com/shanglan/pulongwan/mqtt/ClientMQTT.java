@@ -17,7 +17,7 @@ public class ClientMQTT {
 
 
     public static final String HOST = "tcp://10.38.8.201:61613";
-    private static final String clientid = "pulongwan_pc_clientid";
+    private static final String clientid = "pulongwan_pc_clientid"+String.valueOf( Math.random()).hashCode();
     private MqttClient client;
     private MqttConnectOptions options;
     private String userName = "admin";

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>list</title>
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}">
+    <script th:src="@{/static/js/jquery.min.js}"></script>
+    <script th:src="@{/static/js/bootstrap.min.js}"></script>
+    <script th:src="@{/static/js/echarts.min.js}"></script>
+    <link th:href="@{/static/css/jquery.datetimepicker.css}" rel="stylesheet">
+
+    <style type="text/css">
+        .table th, .table td {
+            text-align: center;
+        }
+        .row{
+            height: 600px;
+            background-color: #f7f7f9;
+            display: flex;
+            justify-content:center;
+            align-items:Center;
+            border-bottom: 1px solid #bbbbbb;
+        }
+        #chart{
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            padding-bottom: 70px;
+        }
+        .head{
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .cal_input1{
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container-fluid">
+        <div class="head">
+            <form th:action="@{/history/}+${topicId}" method="get">
+                <div class="fr  text-center">
+                    <input class="form-control time_input cal_input1  text-center" type="text" placeholder="选择日期" name="queryDate" th:value="${queryDTO.queryDate?.toString()}" />
+                    <input class="search_tit btn-success" type="submit" value="查询" />
+                </div>
+            </form>
+        </div>
+        <div class="row ">
+            <div class="col-xs-12" id="chart">
+            </div>
+        </div>
+
+    </div>
+    <script th:src="@{/static/js/jquery-1.7.2.min.js}"></script>
+    <script th:src="@{/static/js/paho-mqtt.js}"></script>
+    <script th:src="@{/static/config/config.js}"></script>
+    <script th:src="@{/static/js/jquery.js}"></script>
+    <script th:src="@{/static/js/jquery.datetimepicker.full.js}"></script>
+
+
+    <script type="text/javascript" th:inline="javascript">
+    var ctx = /*[[@{/}]]*/;
+    var historyData = /*[[${historyData}]]*/;
+
+    $('.time_input').datetimepicker({
+        lang:"ch", //语言选择中文 注：旧版本 新版方法：$.datetimepicker.setLocale('ch');
+        format:"Y-m-d",
+        timepicker:false,
+        yearStart:2000,
+        yearEnd:2050,
+        todayButton:true
+    });
+
+    $(document).ready(function() {
+        
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('chart'));
+        var data = [];
+
+        //添加数据
+        $.each(historyData,function (i, value) {
+            var params = new Array();
+            var date = value.delTime;
+            params[0] = date.hour + ':' + date.minute+ ':' +date.second;
+            params[1] = parseInt(value.monitorValue);
+            data.push(params);
+        })
+
+        option = {
+            title: {
+                text: 'value'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            xAxis: {
+                data: data.map(function (item) {
+                    return item[0];
+                })
+            },
+            yAxis: {
+                splitLine: {
+                    show: false
+                }
+            },
+            dataZoom: [{
+                startValue: ''
+            }, {
+                type: 'inside'
+            }],
+            visualMap: {
+                top: 10,
+                right: 10,
+                pieces: [{
+                    gt: 0,
+                    lte: 50,
+                    color: '#096'
+                }, {
+                    gt: 50,
+                    lte: 100,
+                    color: '#ff9933'
+                }, {
+                    gt: 100,
+                    lte: 150,
+                    color: '#cc0033'
+                }],
+                outOfRange: {
+                    color: '#999'
+                }
+            },
+            series: {
+                name: '值',
+                type: 'line',
+                data: data.map(function (item) {
+                    return item[1];
+                }),
+                markLine: {
+                    silent: true,
+                    data: [{
+                        yAxis: 50
+                    }, {
+                        yAxis: 100
+                    }, {
+                        yAxis: 150
+                    }, {
+                        yAxis: 200
+                    }, {
+                        yAxis: 250
+                    }]
+                }
+            }
+        };
+
+        myChart.setOption(option);
+    });
+
+
+</script>
+</body>
+</html>

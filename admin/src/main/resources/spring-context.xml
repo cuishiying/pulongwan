@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:cache="http://www.springframework.org/schema/cache"
-	xmlns:c="http://www.springframework.org/schema/c" xmlns:util="http://www.springframework.org/schema/util"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	   xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	   xmlns:cache="http://www.springframework.org/schema/cache"
+	   xmlns:c="http://www.springframework.org/schema/c" xmlns:util="http://www.springframework.org/schema/util"
+	   xmlns:task="http://www.springframework.org/schema/task"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/aop 
-		http://www.springframework.org/schema/aop/spring-aop.xsd 
-		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/tx
 		http://www.springframework.org/schema/tx/spring-tx.xsd
-		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/mvc
 		http://www.springframework.org/schema/mvc/spring-mvc.xsd
@@ -20,11 +23,13 @@
 		http://www.springframework.org/schema/cache
 		http://www.springframework.org/schema/cache/spring-cache.xsd
 		http://www.springframework.org/schema/util
-		http://www.springframework.org/schema/util/spring-util.xsd" default-lazy-init="true">
-	<import resource="classpath:pulongwan-timing-conf.xml"/>
+		http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd"
+	   default-lazy-init="true">
+
+
+	<import resource="pulongwan-timing-conf.xml"/>
 	<context:component-scan base-package="com.shanglan.pulongwan"/>
 	<context:property-placeholder location="classpath:jdbc.properties"/>
-	<!--<context:property-placeholder location="classpath:pulongwan-timing-conf.xml"/>-->
 	<bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
 		<property name="driverClassName" value="${jdbc.driver}"/>
 		<property name="url" value="${jdbc.url}"/>
@@ -35,8 +40,15 @@
 		<property name="minIdle" value="${jdbc.pool.minIdle}" />
 		<property name="maxIdle" value="${jdbc.pool.maxIdle}" />
 		<property name="maxWait" value="${jdbc.pool.maxWait}" />
-	</bean>
 
+		<property name="removeAbandoned" value="true"/>  <!-- 是否自动回收超时连接-->
+		<property name="removeAbandonedTimeout" value="600" /><!--  泄露的连接可以被删除的超时值， 单位秒应设置为应用中查询执行最长的时间,单位为秒 -->
+		<property name="validationInterval" value="60000"/>  <!--检查连接死活的时间间隔（单位：毫妙） 0以下的话不检查。默认是0。 -->
+		<property name="validationQuery"><value>SELECT 1</value></property>
+		<property name="testOnBorrow"><value>true</value></property>
+		<property name="testOnReturn"><value>true</value></property>
+		<property name="testWhileIdle"><value>true</value></property>  <!-- 验证失败时，是否将连接从池中丢弃 -->
+	</bean>
 	<!-- 配置Jdbc模板 -->
 	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
 		<property name="dataSource" ref="dataSource"></property>
@@ -49,11 +61,12 @@
 		</property>
 		<property name="jpaProperties">
 			<props>
+				<prop key="hibernate.autoReconnect">true</prop>
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
 				<prop key="hibernate.show_sql">true</prop>
 				<prop key="hibernate.format_sql">true</prop>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
-				<prop key="hibernate.physical_naming_strategy">com.shanglan.pulongwan.converter.SimplePhysicalNamingStrategy</prop>
+				<!--<prop key="hibernate.physical_naming_strategy">com.shanglan.exam.converter.SimplePhysicalNamingStrategy</prop>-->
 				<prop key="hibernate.implicit_naming_strategy">org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl</prop>
 			</props>
 		</property>

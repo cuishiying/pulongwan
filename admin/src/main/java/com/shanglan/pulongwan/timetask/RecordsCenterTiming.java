@@ -1,4 +1,4 @@
-package com.shanglan.pulongwan.db;
+package com.shanglan.pulongwan.timetask;
 
 import com.shanglan.pulongwan.base.AjaxResponse;
 import com.shanglan.pulongwan.service.DbService;
@@ -11,7 +11,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
-
 
 
 /**
@@ -51,7 +50,7 @@ public class RecordsCenterTiming {
 	public LocalDateTime getBeforeDate(){
 		Date dBefore = new Date();
 		calendar.setTime(LocalDateTimeToUdate());
-		calendar.add(calendar.MONTH, -3);
+		calendar.add(calendar.MONTH, -1);
 		dBefore = calendar.getTime();
 		LocalDateTime time = UDateToLocalDateTime(dBefore);
 		return time;

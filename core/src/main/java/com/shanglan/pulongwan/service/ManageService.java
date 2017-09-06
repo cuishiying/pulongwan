@@ -105,6 +105,14 @@ public class ManageService {
 
         return AjaxResponse.success();
     }
+
+    /**
+     * 保存历史数据
+     * @param topic
+     * @param message
+     * @return
+     * @throws Exception
+     */
     public AjaxResponse handleData(String topic,String message) throws Exception {
         //每60条数据存储一次
         if(tempData.size()<60){

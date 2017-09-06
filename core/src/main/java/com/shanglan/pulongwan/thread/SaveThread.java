@@ -14,10 +14,10 @@ public class SaveThread extends Thread {
     @Override
     public void run() {
         try {
-            ClientMQTT.getInstance().connectWithResult().subscribeTopic("10KV/#").subscribeTopic("35KV/#").subscribeTopic("1号风机/#").subscribeTopic("2号风机/#").setCallBack(new MqttCallback() {
+            ClientMQTT.getInstance().connectWithResult().subscribeTopic("35KV/#").subscribeTopic("10KV/#").subscribeTopic("1号风机/#").subscribeTopic("2号风机/#").setCallBack(new MqttCallback() {
                 @Override
                 public void connectionLost(Throwable cause) {
-
+                    System.out.println(cause);
                 }
 
                 @Override

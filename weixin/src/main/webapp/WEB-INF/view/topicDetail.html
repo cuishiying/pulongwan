@@ -19,7 +19,8 @@
         }
         .row span{
            display: inline-block;
-            width: 100px;
+            min-width: 50px;
+            max-width: 80px;
             line-height: 30px;
             background-color: #ffffff;
         }
@@ -29,6 +30,8 @@
 <body>
 
 <div class="container-fluid list">
+    <!--<h5 onclick="javascript:history.go(-1)">返回</h5>-->
+
 
     <div th:each="field,index:${fields}">
         <div class="row">
@@ -39,10 +42,10 @@
             <!--<div class="col-xs-3" th:text="${field.type}" th:value="${field.type}">-->
                 <!--前轴温-->
             <!--</div>-->
-            <div class="col-xs-3 text-center item">
+            <div class="col-xs-2 text-center item">
                 <span th:text="${field.telemetryValue==null?'##.##':field.telemetryValue}" th:value="${field.describer}" th:attr="warmingValue=${field.warmingValue}">##.##</span>
             </div>
-            <div class="col-xs-4 text-right">
+            <div class="col-xs-5 text-right">
                 <!--<a type="button" class="btn btn-success btn-xs" role="button">详情</a>-->
                 <a type="button" class="btn btn-success btn-xs" role="button" th:href="@{/chart/}+${field.id}">详情</a>
                 <a type="button" class="btn btn-success btn-xs" role="button" th:href="@{/history/}+${field.id}">历史数据</a>

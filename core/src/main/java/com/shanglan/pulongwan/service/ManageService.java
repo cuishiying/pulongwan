@@ -20,7 +20,7 @@ import java.util.List;
  * Created by cuishiying on 2017/5/10.
  */
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class ManageService {
 
     @Autowired
@@ -114,20 +114,27 @@ public class ManageService {
      * @throws Exception
      */
     public AjaxResponse handleData(String topic,String message) throws Exception {
-        //每60条数据存储一次
-        if(tempData.size()<60){
-            TopicDetail topicDetail = TopicDetailPoolFactory.borrowObject();
-            topicDetail.setTopic(topic);
-            topicDetail.setMonitorValue(message);
-            topicDetail.setDelTime(LocalDateTime.now());
-            tempData.add(topicDetail);
-            TopicDetailPoolFactory.returnObject(topicDetail);
 
-        }else{
+        //每60条数据存储一次
+        TopicDetail topicDetail = new TopicDetail();
+        topicDetail.setTopic(topic);
+        topicDetail.setMonitorValue(message);
+        topicDetail.setDelTime(LocalDateTime.now());
+        tempData.add(topicDetail);
+        topicDetail = null;
+
+        if(tempData.size()>=60){
             dataRepository.save(tempData);
             tempData.clear();
         }
 
+//        TopicDetail topicDetail = TopicDetailPoolFactory.borrowObject();
+//        topicDetail.setTopic(topic);
+//        topicDetail.setMonitorValue(message);
+//        topicDetail.setDelTime(LocalDateTime.now());
+//        dataRepository.save(topicDetail);
+//        topicDetail.setId(null);
+//        TopicDetailPoolFactory.returnObject(topicDetail);
         return AjaxResponse.success();
     }
 }

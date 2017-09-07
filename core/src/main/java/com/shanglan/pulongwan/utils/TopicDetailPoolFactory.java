@@ -52,4 +52,25 @@ public class TopicDetailPoolFactory extends BasePooledObjectFactory<TopicDetail>
     public PooledObject<TopicDetail> wrap(TopicDetail topicDetail) {
         return new DefaultPooledObject<>(topicDetail);
     }
+
+
+    @Override
+    public void destroyObject(PooledObject<TopicDetail> p) throws Exception {
+        super.destroyObject(p);
+    }
+
+    @Override
+    public boolean validateObject(PooledObject<TopicDetail> p) {
+        return super.validateObject(p);
+    }
+
+    @Override
+    public void activateObject(PooledObject<TopicDetail> p) throws Exception {
+        super.activateObject(p);
+    }
+
+    @Override
+    public void passivateObject(PooledObject<TopicDetail> p) throws Exception {
+        super.passivateObject(p);
+    }
 }

@@ -59,7 +59,7 @@ public class DbService {
         LocalDateTime begin = LocalDateTime.of(queryDTO.getQueryDate(), LocalTime.MIN);
         LocalDateTime end = LocalDateTime.of(queryDTO.getQueryDate(), LocalTime.MAX);
 
-        List<TopicDetail> list = dataRepository.queryHistoryData(field.getDescriber(), begin, end);
+        List<TopicDetail> list = dataRepository.queryHistoryData(id, begin, end);
         return list;
 
     }

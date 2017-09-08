@@ -22,7 +22,7 @@ public interface DataRepository extends JpaRepository<TopicDetail,Integer>,JpaSp
     @Query("DELETE FROM TopicDetail t WHERE t.delTime < ?1")
     int delOldData(LocalDateTime delTime);
 
-    @Query("SELECT t FROM TopicDetail t WHERE t.topic = ?1 and t.delTime > ?2 and t.delTime < ?3")
-    List<TopicDetail> queryHistoryData(String topic, LocalDateTime startTime, LocalDateTime endTime);
+    @Query("SELECT t FROM TopicDetail t WHERE t.topicId = ?1 and t.delTime > ?2 and t.delTime < ?3")
+    List<TopicDetail> queryHistoryData(Integer topicId, LocalDateTime startTime, LocalDateTime endTime);
 
 }

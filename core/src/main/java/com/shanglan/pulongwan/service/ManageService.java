@@ -1,6 +1,7 @@
 package com.shanglan.pulongwan.service;
 
 import com.shanglan.pulongwan.base.AjaxResponse;
+import com.shanglan.pulongwan.config.Constance;
 import com.shanglan.pulongwan.entity.Topic;
 import com.shanglan.pulongwan.entity.TopicDetail;
 import com.shanglan.pulongwan.repository.DataRepository;
@@ -117,8 +118,9 @@ public class ManageService {
 
         //每60条数据存储一次
         TopicDetail topicDetail = new TopicDetail();
-        topicDetail.setTopic(topic);
-        topicDetail.setMonitorValue(message);
+        topicDetail.setTopicId(Constance.getTopicConfig(topic));
+//        topicDetail.setTopic(topic);
+        topicDetail.setMonitorValue(Double.valueOf(message));
         topicDetail.setDelTime(LocalDateTime.now());
         tempData.add(topicDetail);
         topicDetail = null;

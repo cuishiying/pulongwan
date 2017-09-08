@@ -14,7 +14,8 @@ public class TopicDetail extends BaseEntity{
     private static final long serialVersionUID = -8206225398536914424L;
 
     private String topic;
-    private String monitorValue;
+    private Integer topicId;
+    private Double monitorValue;
     private LocalDateTime delTime;
 
 
@@ -26,11 +27,19 @@ public class TopicDetail extends BaseEntity{
         this.topic = topic;
     }
 
-    public String getMonitorValue() {
+    public Integer getTopicId() {
+        return topicId;
+    }
+
+    public void setTopicId(Integer topicId) {
+        this.topicId = topicId;
+    }
+
+    public Double getMonitorValue() {
         return monitorValue;
     }
 
-    public void setMonitorValue(String monitorValue) {
+    public void setMonitorValue(Double monitorValue) {
         this.monitorValue = monitorValue;
     }
 

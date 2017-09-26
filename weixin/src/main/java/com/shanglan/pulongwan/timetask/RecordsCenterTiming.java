@@ -40,6 +40,7 @@ public class RecordsCenterTiming {
 	 * 用户来源定时
 	 */
 	public void userSourceTiming() {
+		System.out.println("=======userSourceTiming");
 		AjaxResponse ajaxResponse = dbService.delOldData(getBeforeDate());
 	}
 

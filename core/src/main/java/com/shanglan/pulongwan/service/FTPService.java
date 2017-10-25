@@ -8,6 +8,7 @@ import com.shanglan.pulongwan.interf.OnPublishRockPressureListener;
 import com.shanglan.pulongwan.mqtt.ServerMQTT;
 import com.shanglan.pulongwan.utils.BaseUtils;
 import com.shanglan.pulongwan.utils.MqttUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.monitor.FileAlterationListener;
@@ -31,16 +32,21 @@ import java.util.concurrent.TimeUnit;
 public class FTPService {
 
     String filePath = "/Users/cuishiying/2017/04/bk/src/oa/矿压/";
+    String fileName = "dev.txt";
 
 
     /**
-     * 监听文件的增删
+     * 监听文件的增删，项目部署后由AutoService自动启动执行
      * @throws Exception
      */
     public AjaxResponse monitorFile()throws Exception{
         monitorFile(filePath);
         return AjaxResponse.success();
     }
+    /**
+     * 监听文件的增删
+     * @throws Exception
+     */
     public AjaxResponse monitorFile(String filePath) throws Exception {
 
         File dir = new File(filePath);
@@ -56,7 +62,8 @@ public class FTPService {
                 super.onFileCreate(file);
                 System.out.println(file.getName()+"==onFileCreate");
                 try {
-                    if(StringUtils.equals(file.getName(),"dev.txt")){
+                    //如果是监测的数据文件则解析
+                    if(StringUtils.equals(file.getName(),fileName)){
                         handleData(file);
                     }
                 } catch (IOException e) {
@@ -75,7 +82,7 @@ public class FTPService {
     }
 
     /**
-     * 解析矿压数据
+     * 解析矿压数据并发布到Apollo
      * @param file
      * @throws IOException
      */
@@ -95,9 +102,9 @@ public class FTPService {
                 String name = ss[0].substring(7, 9);//名称
                 String value = ss[7];//压力值
                 if(name.equals("P1")){
-                    map.put("oneValue",value);
+                    map.put("oneValue",value);//1通道测量值
                 }else if(name.equals("P2")){
-                    map.put("twoValue",value);
+                    map.put("twoValue",value);//2通道测量值
                 }
             }else{
                 String mainPoint = ss[0].substring(0, 2);//主站
@@ -125,9 +132,14 @@ public class FTPService {
             }
         }
         br.close();
+//        FileUtils.deleteQuietly(file);//删除文件
         MqttUtils.publishRockPressure(list);
     }
 
+    /**
+     * 初始化页面，数据由Apollo渲染
+     * @return
+     */
     public List<RockPressure> initRockPressureData(){
         List<RockPressure> list = new ArrayList<>();
         RockPressure rockPressure = null;

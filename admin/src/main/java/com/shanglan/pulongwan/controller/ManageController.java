@@ -57,14 +57,13 @@ public class ManageController {
         ModelAndView model = new ModelAndView("topicList");
         Page<Topic> page = manageService.getTopics(pageable);
 
-        //启动接收程序
-//        autoService.setMqttConfig();
         model.addObject("page",page);
         return model;
     }
 
     /**
      * 主题详情页(展示数据详情页)
+     * 前端根据一级主题topic订阅
      * @return
      */
     @RequestMapping(path = "/detail/{id}",method = RequestMethod.GET)

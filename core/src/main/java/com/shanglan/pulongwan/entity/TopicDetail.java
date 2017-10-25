@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 /**
  * Created by cuishiying on 2017/5/12.
+ * 监测值
  */
 @Entity
 public class TopicDetail extends BaseEntity{

@@ -35,6 +35,8 @@ public class MqttUtils {
 
     /**
      * 发布矿压主题
+     * 主题：传感器编码
+     * 内容：所有数据转json
      * @param data
      */
     public static void publishRockPressure(List<RockPressure> data){

@@ -34,20 +34,20 @@
     </tr>
     </thead>
     <tbody>
-    <tr class="text-center" th:each="item:${list}">
+    <tr class="text-center item" th:each="item:${list}" th:value="${item.sensorCode}">
         <td>001</td>
-        <td>01</td>
-        <td>在线</td>
-        <td>01</td>
-        <td>综采监测</td>
-        <td>001#支架</td>
+        <td value="mainPoint">01</td>
+        <td value="reportWay">在线</td>
+        <td value="subPoint">01</td>
+        <td value="subPointType">综采监测</td>
+        <td value="sensorRegion">001#支架</td>
         <td th:text="${item.sensorCode}">001</td>
-        <td>综采压力</td>
-        <td>1.0</td>
-        <td>0.0</td>
-        <td>--</td>
-        <td>Mpa</td>
-        <td>断线</td>
+        <td value="sensorType">综采压力</td>
+        <td value="oneValue">1.0</td>
+        <td value="twoValue">0.0</td>
+        <td value="threeValue">--</td>
+        <td value="unit">Mpa</td>
+        <td value="reportStatus">断线</td>
     </tr>
     </tbody>
 </table>
@@ -104,7 +104,7 @@
         var topic = message.destinationName;
         var payload = message.payloadString;
         console.log("订阅消息:==== "+topic+"===="+payload);
-        $(".list").find(".item span[value='"+topic+"']").html(payload);
+//        $(".table").find("tr[value='"+topic+"']").next("td[value=mainPoint]").html(payload);
     };
 
 

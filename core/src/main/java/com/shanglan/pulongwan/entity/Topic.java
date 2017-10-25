@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 
 /**
  * Created by cuishiying on 2017/5/10.
+ * 一级主题
  */
 @Entity
 public class Topic extends BaseEntity{
@@ -13,7 +14,16 @@ public class Topic extends BaseEntity{
     private static final long serialVersionUID = -7594951171340265653L;
 
     private String monitorName;//监控项名称（1号风机）
-    private String topic;//订阅主题
+    private String topic;//订阅主题（1号风机）
+
+    public Topic() {
+
+    }
+
+    public Topic(String monitorName, String topic) {
+        this.monitorName = monitorName;
+        this.topic = topic;
+    }
 
     public String getMonitorName() {
         return monitorName;

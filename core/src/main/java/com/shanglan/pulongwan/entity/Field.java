@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 
 /**
  * Created by cuishiying on 2017/7/24.
+ * 二级主题
  */
 @Entity
 public class Field extends BaseEntity{

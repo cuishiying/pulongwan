@@ -9,6 +9,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.time.LocalDateTime;
 
 /**
  * Created by cuishiying on 2017/7/22.
@@ -23,6 +24,10 @@ public class TestController {
     public void test() throws Exception{
 //        int j = ByteBuffer.wrap("62".getBytes()).order(ByteOrder.BIG_ENDIAN).getInt();
 //        System.out.println(j);
+
+        LocalDateTime now = LocalDateTime.now();
+        int minute = now.getMinute()%30;
+        System.out.println(minute);
     }
 
 

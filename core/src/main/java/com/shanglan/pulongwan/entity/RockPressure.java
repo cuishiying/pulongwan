@@ -29,6 +29,7 @@ public class RockPressure extends BaseEntity{
     private String unit;//单位
     private String reportStatus;//通信状态
     private LocalDateTime time;//时间
+    private LocalDateTime delTime;
 
     public RockPressure() {
     }
@@ -149,5 +150,13 @@ public class RockPressure extends BaseEntity{
 
     public void setTime(LocalDateTime time) {
         this.time = time;
+    }
+
+    public LocalDateTime getDelTime() {
+        return delTime;
+    }
+
+    public void setDelTime(LocalDateTime delTime) {
+        this.delTime = delTime;
     }
 }

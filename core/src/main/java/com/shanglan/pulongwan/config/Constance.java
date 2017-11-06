@@ -13,6 +13,7 @@ import java.util.Map;
 public class Constance {
     private static boolean receiveDataFlat = true;
     private static boolean handlerDataFlat = true;
+    private static boolean RockPressureFlat = true;
 //    private static String apollo_host = "tcp://localhost:61613";
     private static String apollo_host = "tcp://10.38.8.201:61613";
     private static String apollo_clientid = "pulongwan_clientid";
@@ -54,6 +55,14 @@ public class Constance {
 
     public static void setHandlerDataFlat(boolean handlerDataFlat) {
         Constance.handlerDataFlat = handlerDataFlat;
+    }
+
+    public static boolean isRockPressureFlat() {
+        return RockPressureFlat;
+    }
+
+    public static void setRockPressureFlat(boolean rockPressureFlat) {
+        RockPressureFlat = rockPressureFlat;
     }
 
     public static String getApollo_host() {

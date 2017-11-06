@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>list</title>
     <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}">
-    <script th:src="@{/static/js/jquery.min.js}"></script>
-    <script th:src="@{/static/js/bootstrap.min.js}"></script>
+
     <style type="text/css">
         .table th, .table td {
             text-align: center;
@@ -14,44 +13,73 @@
     </style>
 </head>
 <body>
-<table class="table table-striped" >
-    <caption>上下文表格布局</caption>
-    <thead>
-    <tr>
-        <th>序号</th>
-        <th>主站</th>
-        <th>通讯方式</th>
-        <th>分站</th>
-        <th>分站类型</th>
-        <th>传感器安装区域</th>
-        <th>传感器编号</th>
-        <th>传感器类型</th>
-        <th>一通道测量值</th>
-        <th>二通道测量值</th>
-        <th>三通道测量值</th>
-        <th>单位</th>
-        <th>通信状态</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr class="text-center" th:each="item:${list}">
-        <td>001</td>
-        <td>01</td>
-        <td>在线</td>
-        <td>01</td>
-        <td>综采监测</td>
-        <td>001#支架</td>
-        <td th:text="${item.sensorCode}">001</td>
-        <td>综采压力</td>
-        <td>1.0</td>
-        <td>0.0</td>
-        <td>--</td>
-        <td>Mpa</td>
-        <td>断线</td>
-    </tr>
-    </tbody>
-</table>
+<div id="wrapper">
+    <div class="main">
+        <div class="main-content">
+            <div class="panel panel-headline">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">矿压监测</h3>
+                    </div>
+                    <div>
+                        <a class="btn btn-primary" th:href="@{/ftp/rockPressure/history}">历史纪录</a>
+                    </div>
+                    <!--<form th:action="@{/}" method="get">-->
+                    <!--<div class="panel-query form-inline">-->
+                    <!--<input type="text" name="keyword" class="form-control" placeholder="分站、传感器类型..."/>-->
+                    <!--<input type="text" class="form-control date" placeholder="开始时间" name="beginDate">-->
+                    <!--<input type="text" class="form-control date" placeholder="结束时间" name="endDate">-->
+                    <!--<button type="submit" class="btn btn-primary">搜索</button>-->
+                    <!--</div>-->
+                    <!--</form>-->
+                    <div class="panel-body no-padding">
+                        <table class="table table-striped" >
+                            <caption>上下文表格布局</caption>
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>主站</th>
+                                <th>通讯方式</th>
+                                <th>分站</th>
+                                <th>分站类型</th>
+                                <th>传感器安装区域</th>
+                                <th>传感器编号</th>
+                                <th>传感器类型</th>
+                                <th>一通道测量值</th>
+                                <th>二通道测量值</th>
+                                <th>三通道测量值</th>
+                                <th>单位</th>
+                                <th>通信状态</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="text-center item" th:each="item:${list}" th:value="${item.sensorCode}">
+                                <td>001</td>
+                                <td value="mainPoint">01</td>
+                                <td value="reportWay">在线</td>
+                                <td value="subPoint">01</td>
+                                <td value="subPointType">综采监测</td>
+                                <td value="sensorRegion">001#支架</td>
+                                <td th:text="${item.sensorCode}">001</td>
+                                <td value="sensorType">综采压力</td>
+                                <td value="oneValue">1.0</td>
+                                <td value="twoValue">0.0</td>
+                                <td value="threeValue">--</td>
+                                <td value="unit">Mpa</td>
+                                <td value="reportStatus">断线</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+
+<script th:src="@{/static/js/jquery.min.js}"></script>
+<script th:src="@{/static/js/bootstrap.min.js}"></script>
 <script th:src="@{/static/js/jquery-1.7.2.min.js}"></script>
 <script th:src="@{/static/js/paho-mqtt.js}"></script>
 <script th:src="@{/static/config/config.js}"></script>
@@ -104,7 +132,17 @@
         var topic = message.destinationName;
         var payload = message.payloadString;
         console.log("订阅消息:==== "+topic+"===="+payload);
-        $(".list").find(".item span[value='"+topic+"']").html(payload);
+        $(".table").find("tr[value='"+topic+"']").find("td[value=mainPoint]").html(payload.mainPoint);
+        $(".table").find("tr[value='"+topic+"']").find("td[value=reportWay]").html(payload.reportWay);
+        $(".table").find("tr[value='"+topic+"']").find("td[value=subPoint]").html(payload.subPoint);
+        $(".table").find("tr[value='"+topic+"']").find("td[value=subPointType]").html(payload.subPointType);
+        $(".table").find("tr[value='"+topic+"']").find("td[value=sensorRegion]").html(payload.sensorRegion);
+        $(".table").find("tr[value='"+topic+"']").find("td[value=sensorType]").html(payload.sensorType);
+        $(".table").find("tr[value='"+topic+"']").find("td[value=oneValue]").html(payload.oneValue);
+        $(".table").find("tr[value='"+topic+"']").find("td[value=twoValue]").html(payload.twoValue);
+        $(".table").find("tr[value='"+topic+"']").find("td[value=threeValue]").html(payload.threeValue);
+        $(".table").find("tr[value='"+topic+"']").find("td[value=unit]").html(payload.unit);
+        $(".table").find("tr[value='"+topic+"']").find("td[value=reportStatus]").html(payload.reportStatus);
     };
 
 

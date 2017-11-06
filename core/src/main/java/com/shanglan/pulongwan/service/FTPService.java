@@ -2,10 +2,13 @@ package com.shanglan.pulongwan.service;
 
 import com.google.gson.Gson;
 import com.shanglan.pulongwan.base.AjaxResponse;
+import com.shanglan.pulongwan.config.Constance;
+import com.shanglan.pulongwan.dto.RockPressureQueryDTO;
 import com.shanglan.pulongwan.entity.Field;
 import com.shanglan.pulongwan.entity.RockPressure;
 import com.shanglan.pulongwan.interf.OnPublishRockPressureListener;
 import com.shanglan.pulongwan.mqtt.ServerMQTT;
+import com.shanglan.pulongwan.repository.RockPressureRepository;
 import com.shanglan.pulongwan.utils.BaseUtils;
 import com.shanglan.pulongwan.utils.MqttUtils;
 import org.apache.commons.io.FileUtils;
@@ -18,10 +21,17 @@ import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Predicate;
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +41,10 @@ import java.util.concurrent.TimeUnit;
 @Transactional
 public class FTPService {
 
-    String filePath = "/Users/cuishiying/2017/04/bk/src/oa/矿压/";
+    @Autowired
+    private RockPressureRepository rockPressureRepository;
+
+    String filePath = "/Users/cuishiying/2017/04/bk/src/oa/矿压监测/";
     String fileName = "dev.txt";
 
 
@@ -127,13 +140,25 @@ public class FTPService {
             }
             if(!StringUtils.isEmpty(map.get("oneValue"))&&!StringUtils.isEmpty(map.get("twoValue"))){
                 RockPressure rockPressure = new RockPressure(map);
+                rockPressure.setDelTime(LocalDateTime.now());
                 list.add(rockPressure);
                 map.clear();
             }
         }
         br.close();
-//        FileUtils.deleteQuietly(file);//删除文件
         MqttUtils.publishRockPressure(list);
+        saveRockPressureData(list);
+    }
+
+    /**
+     * 每半小时保存矿压数据
+     * @param list
+     */
+    public void saveRockPressureData(List<RockPressure> list){
+        LocalDateTime now = LocalDateTime.now();
+        if(now.getMinute()%30==0){
+            rockPressureRepository.save(list);
+        }
     }
 
     /**
@@ -149,6 +174,48 @@ public class FTPService {
             list.add(rockPressure);
         }
         return list;
+    }
+
+    /**
+     * 矿压监测历史纪录
+     * @param queryDTO
+     * @param pageable
+     * @return
+     */
+    public Page<RockPressure> findRockPressureData(RockPressureQueryDTO queryDTO, Pageable pageable){
+        Specification<RockPressure> specification = getWhereClause(queryDTO);
+        return rockPressureRepository.findAll(specification,pageable);
+    }
+    /**
+     * 查询条件
+     * @param queryVo
+     * @return
+     */
+    private Specification<RockPressure> getWhereClause(RockPressureQueryDTO queryVo) {
+        return (root, query, cb) -> {
+            List<Predicate> predicate = new ArrayList<>();
+
+            //关键词
+            if(queryVo!=null&&StringUtils.isNotBlank(queryVo.getKeyword())){
+                predicate.add(cb.or(cb.like(root.<String>get("subPoint"), "%" + queryVo.getKeyword().trim() + "%"),
+                        cb.like(root.<String>get("sensorType"), "%" + queryVo.getKeyword().trim() + "%")));
+
+            }
+
+            //时间
+            if (queryVo!=null&&queryVo.getQueryDate() != null) {
+                LocalDateTime begin = LocalDateTime.of(queryVo.getBeginDate(), LocalTime.MIN);
+                Predicate dateBeginQuery = cb.greaterThanOrEqualTo(root.<LocalDateTime>get("delTime"), begin);
+                predicate.add(dateBeginQuery);
+            }
+            if (queryVo!=null&&queryVo.getQueryDate() != null) {
+                LocalDateTime end = LocalDateTime.of(queryVo.getBeginDate(), LocalTime.MAX);
+                Predicate dateEndQuery = cb.greaterThanOrEqualTo(root.<LocalDateTime>get("delTime"), end);
+                predicate.add(dateEndQuery);
+            }
+
+            return query.where(predicate.toArray(new Predicate[predicate.size()])).getRestriction();
+        };
     }
 
 }

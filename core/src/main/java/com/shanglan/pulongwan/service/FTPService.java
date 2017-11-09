@@ -44,24 +44,12 @@ public class FTPService {
     @Autowired
     private RockPressureRepository rockPressureRepository;
 
-    String filePath = "/Users/cuishiying/2017/04/bk/src/oa/矿压监测/";
-    String fileName = "dev.txt";
-
 
     /**
-     * 监听文件的增删，项目部署后由AutoService自动启动执行
+     * 监听矿压文件的增删,项目部署后由AutoService自动启动执行
      * @throws Exception
      */
-    public AjaxResponse monitorFile()throws Exception{
-        monitorFile(filePath);
-        return AjaxResponse.success();
-    }
-    /**
-     * 监听文件的增删
-     * @throws Exception
-     */
-    public AjaxResponse monitorFile(String filePath) throws Exception {
-
+    public AjaxResponse monitorRockPressureFile(String filePath,String fileName) throws Exception{
         File dir = new File(filePath);
         // 轮询间隔 1 秒
         long interval = TimeUnit.SECONDS.toMillis(1);
@@ -75,9 +63,9 @@ public class FTPService {
                 super.onFileCreate(file);
                 System.out.println(file.getName()+"==onFileCreate");
                 try {
-                    //如果是监测的数据文件则解析
-                    if(StringUtils.equals(file.getName(),fileName)){
-                        handleData(file);
+                    //如果是监测的矿压数据文件则解析
+                    if(StringUtils.equals(file.getName(),fileName)&&StringUtils.equals(fileName,"dev.txt")){
+                        handleRockPressureData(file);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -99,7 +87,7 @@ public class FTPService {
      * @param file
      * @throws IOException
      */
-    public void handleData(File file) throws IOException {
+    public void handleRockPressureData(File file) throws IOException {
         List<RockPressure> list = new ArrayList();
         HashMap<String, String> map = new HashMap<String, String>();
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));

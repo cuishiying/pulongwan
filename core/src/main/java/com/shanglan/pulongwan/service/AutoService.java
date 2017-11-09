@@ -34,6 +34,9 @@ public class AutoService {
 
     ThreadUtils threadUtils = new ThreadUtils();
 
+    String filePath = "/Users/cuishiying/2017/04/bk/src/oa/矿压监测/";
+    String fileName = "dev.txt";
+
 
     /**
      * 启动udp监听
@@ -53,7 +56,7 @@ public class AutoService {
      */
     @PostConstruct
     public void ftpStart() throws Exception {
-        ftpService.monitorFile();
+        ftpService.monitorRockPressureFile(filePath,fileName);
 
     }
 

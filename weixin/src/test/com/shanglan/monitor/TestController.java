@@ -69,7 +69,7 @@ public class TestController {
 
     @Test
     public void test2() throws Exception{
-        AjaxResponse ajaxResponse = FTPService.monitorFile(filePath);
+        AjaxResponse ajaxResponse = FTPService.monitorFile(filePath,fileName);
 
     }
     @Test

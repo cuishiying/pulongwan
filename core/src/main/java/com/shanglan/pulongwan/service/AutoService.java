@@ -57,7 +57,6 @@ public class AutoService {
     @PostConstruct
     public void ftpStart() throws Exception {
         ftpService.monitorRockPressureFile(filePath,fileName);
-
     }
 
 

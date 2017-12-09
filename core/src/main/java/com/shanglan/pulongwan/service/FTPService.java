@@ -4,10 +4,12 @@ import com.google.gson.Gson;
 import com.shanglan.pulongwan.base.AjaxResponse;
 import com.shanglan.pulongwan.config.Constance;
 import com.shanglan.pulongwan.dto.RockPressureQueryDTO;
+import com.shanglan.pulongwan.entity.FTPConf;
 import com.shanglan.pulongwan.entity.Field;
 import com.shanglan.pulongwan.entity.RockPressure;
 import com.shanglan.pulongwan.interf.OnPublishRockPressureListener;
 import com.shanglan.pulongwan.mqtt.ServerMQTT;
+import com.shanglan.pulongwan.repository.FtpConfRepository;
 import com.shanglan.pulongwan.repository.RockPressureRepository;
 import com.shanglan.pulongwan.utils.BaseUtils;
 import com.shanglan.pulongwan.utils.MqttUtils;
@@ -43,12 +45,46 @@ public class FTPService {
 
     @Autowired
     private RockPressureRepository rockPressureRepository;
+    @Autowired
+    private FtpConfRepository ftpConfRepository;
+
+
+    public FTPConf findFTPConfByName(String name){
+        FTPConf conf = ftpConfRepository.findByName(name);
+        return conf;
+    }
+
+    public AjaxResponse addFTPConf(String name,String ftppath,String monitorfile){
+        FTPConf ftpConf = new FTPConf();
+        ftpConf.setName(name);
+        ftpConf.setFtppath(ftppath);
+        ftpConf.setMonitorfile(monitorfile);
+        ftpConfRepository.save(ftpConf);
+        return AjaxResponse.success();
+    }
+
+    public AjaxResponse updateFTPConf(String name,String ftppath,String monitorfile){
+        FTPConf ftpConf = findFTPConfByName(name);
+        ftpConf.setFtppath(ftppath);
+        ftpConf.setMonitorfile(monitorfile);
+        return AjaxResponse.success();
+    }
+
+
 
 
     /**
      * 监听矿压文件的增删,项目部署后由AutoService自动启动执行
      * @throws Exception
      */
+
+    public AjaxResponse monitorRockPressureFile(String moduleName) throws Exception{
+        FTPConf ftpConf = findFTPConfByName(moduleName);
+        AjaxResponse ajaxResponse = monitorRockPressureFile(ftpConf.getFtppath(), ftpConf.getMonitorfile());
+        return AjaxResponse.success();
+
+    }
+
     public AjaxResponse monitorRockPressureFile(String filePath,String fileName) throws Exception{
         File dir = new File(filePath);
         // 轮询间隔 1 秒
@@ -64,7 +100,7 @@ public class FTPService {
                 System.out.println(file.getName()+"==onFileCreate");
                 try {
                     //如果是监测的矿压数据文件则解析
-                    if(StringUtils.equals(file.getName(),fileName)&&StringUtils.equals(fileName,"dev.txt")){
+                    if(StringUtils.equals(file.getName(),fileName)&&StringUtils.equals(file.getName(),"dev.txt")){
                         handleRockPressureData(file);
                     }
                 } catch (IOException e) {
@@ -136,6 +172,7 @@ public class FTPService {
         br.close();
         MqttUtils.publishRockPressure(list);
         saveRockPressureData(list);
+        FileUtils.deleteQuietly(file);
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.shanglan.monitor;
 
+import com.shanglan.pulongwan.entity.FTPConf;
+import com.shanglan.pulongwan.service.FTPService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +21,15 @@ import java.time.LocalDateTime;
 @ContextConfiguration({"classpath:spring-context.xml"})
 public class TestController {
 
+    @Autowired
+    private FTPService ftpService;
+
 
     @Test
     public void test() throws Exception{
-//        int j = ByteBuffer.wrap("62".getBytes()).order(ByteOrder.BIG_ENDIAN).getInt();
-//        System.out.println(j);
-
-        LocalDateTime now = LocalDateTime.now();
-        int minute = now.getMinute()%30;
-        System.out.println(minute);
+        ftpService.addFTPConf("矿压监测","/Users/cuishiying/2017/04/bk/src/oa/矿压监测/","dev.txt");
+        FTPConf ftpConf = ftpService.findFTPConfByName("矿压监测");
+        System.out.println("ok");
     }
 
 

@@ -14,7 +14,17 @@ FTP测试客户端：FileZilla
 ##矿压监测方案说明：
 (数据源文件见dev.txt)
 
-1、客户机上传监测文件到FTP服务器，
+10.38.8.201
+user:shanglan 911
+FTPService: d:\location
+
+
+open 139.129.227.31	//打开连接
+user  shanglan 123	//帐号密码
+
+
+
+1、客户机上传监测文件到FTP服务器，     
 
 2、本程序监听文件并解析，
 

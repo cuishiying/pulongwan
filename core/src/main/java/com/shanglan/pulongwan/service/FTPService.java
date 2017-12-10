@@ -1,30 +1,15 @@
 package com.shanglan.pulongwan.service;
 
-import com.google.gson.Gson;
 import com.shanglan.pulongwan.base.AjaxResponse;
-import com.shanglan.pulongwan.config.Constance;
 import com.shanglan.pulongwan.dto.RockPressureQueryDTO;
 import com.shanglan.pulongwan.entity.FTPConf;
-import com.shanglan.pulongwan.entity.Field;
 import com.shanglan.pulongwan.entity.RockPressure;
 import com.shanglan.pulongwan.interf.FTPObserver;
 import com.shanglan.pulongwan.interf.OnFileCreateListener;
-import com.shanglan.pulongwan.interf.OnPublishRockPressureListener;
-import com.shanglan.pulongwan.mqtt.ServerMQTT;
 import com.shanglan.pulongwan.repository.FtpConfRepository;
 import com.shanglan.pulongwan.repository.RockPressureRepository;
-import com.shanglan.pulongwan.utils.BaseUtils;
 import com.shanglan.pulongwan.utils.MqttUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.monitor.FileAlterationListener;
-import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
-import org.apache.commons.io.monitor.FileAlterationMonitor;
-import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,7 +24,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional
@@ -246,7 +230,7 @@ public class FTPService {
         br.close();
         MqttUtils.publishRockPressure(list);
         saveRockPressureData(list);
-        FileUtils.deleteQuietly(file);
+//        FileUtils.deleteQuietly(file);
     }
 
     /**

@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class FTPObserver {
     private File dir;
-    private File initFile;
+//    private File initFile;
     private IOFileFilter fileFileter;
     private FileAlterationObserver observer = null;
     private FileAlterationListenerAdaptor adaptor = null;
@@ -25,7 +25,7 @@ public class FTPObserver {
 
         this.dir = new File(filePath);
         this.fileFileter = FileFilterUtils.and(FileFilterUtils.fileFileFilter(),FileFilterUtils.suffixFileFilter(".txt"));
-        this.initFile = new File(filePath,monitorFileName);
+//        this.initFile = new File(filePath,monitorFileName);
 
 
         adaptor = new FileAlterationListenerAdaptor(){
@@ -33,17 +33,14 @@ public class FTPObserver {
             public void onFileCreate(File file) {
                 super.onFileCreate(file);
                 System.out.println(file.getName()+"==onFileCreate");
-                try {
-                    //如果是监测的矿压数据文件则解析
-                    if(StringUtils.equals(file.getName(),monitorFileName)){
-                        if(null!=onFileCreateListener){
-                            onFileCreateListener.onFileCreate(file);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                handleData(file,monitorFileName,onFileCreateListener);
+            }
 
+            @Override
+            public void onFileChange(File file) {
+                super.onFileChange(file);
+                System.out.println(file.getName()+"==onFileChange");
+                handleData(file,monitorFileName,onFileCreateListener);
             }
         };
         if(observer==null){
@@ -55,8 +52,21 @@ public class FTPObserver {
         monitor.start();
     }
 
+    public void handleData(File file,String monitorFileName,OnFileCreateListener onFileCreateListener){
+        try {
+            //如果是监测的矿压数据文件则解析
+            if(StringUtils.equals(file.getName(),monitorFileName)){
+                if(null!=onFileCreateListener){
+                    onFileCreateListener.onFileCreate(file);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void start() throws Exception {
-        FileUtils.deleteQuietly(initFile);
+//        FileUtils.deleteQuietly(initFile);
         //开始监听
         if(observer!=null&&adaptor!=null){
             observer.addListener(adaptor);

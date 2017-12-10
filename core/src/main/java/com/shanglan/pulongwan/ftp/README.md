@@ -47,3 +47,40 @@ user  shanglan 123	//帐号密码
 前端根据topic找到对应行，然后js操作渲染该行的所有值
 
 
+
+##铺龙湾矿压监测脚本
+
+ftpup.bat:
+
+    @echo off
+    color 0f
+    title FTP人员上传脚本请勿关闭
+    
+    :START
+    @echo 开始上传文件
+    @echo %date% %time%
+    ftp   -d  -i -n -s:"D:\shanglan\Ftp.ini"
+    @echo 上传完成
+    @echo %date% %time%
+    
+    del /f /s /q  D:\dev.txt	//删除本地已经上传的文件
+    
+    :END
+    
+    ping 127.0.0.1 -n 10>nul
+    
+    GOTO START
+    
+    @echo %date% %time%
+    
+    
+Ftp.ini:    
+    
+    open 10.38.8.201	//打开连接
+    user  shanglan 911	//帐号密码
+    bin
+    mput  D:\dev.txt	//要上传的文件
+    close
+    bye
+
+

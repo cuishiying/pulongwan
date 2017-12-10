@@ -24,7 +24,7 @@
 		http://www.springframework.org/schema/cache/spring-cache.xsd
 		http://www.springframework.org/schema/util
 		http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd"
-	   default-lazy-init="true">
+	   default-lazy-init="false">
 
 
 	<import resource="pulongwan-timing-conf.xml"/>

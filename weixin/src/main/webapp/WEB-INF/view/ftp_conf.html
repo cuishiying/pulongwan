@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<head>
+    <meta charset="UTF-8">
+    <title>服务器配置</title>
+
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/static/css/jquery.datetimepicker.css}">
+    <style type="text/css">
+        .item-name{
+            display: inline-block;
+            min-width: 120px;
+        }
+
+        .form-inline .item-content{
+            width: 50%;
+        }
+        .form-inline{
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="wrapper">
+    <!--<nav th:replace="common/fragment :: sidebar"></nav>-->
+    <div class="main">
+        <div class="main-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">服务器配置</h3>
+                            </div>
+
+                            <div class="panel-body">
+                                <ul>
+                                    <li class="form-inline">
+                                        <span class="item-name">项目名称</span>
+                                        <input type="text" class="form-control item-content name"  th:value="${conf.name}">
+                                    </li>
+                                    <li class="form-inline">
+                                        <span class="item-name">FTP服务器路径</span>
+                                        <input type="text" class="form-control item-content ftppath" th:value="${conf.ftppath}">
+                                    </li>
+                                    <li class="form-inline">
+                                        <span class="item-name">监听文件名</span>
+                                        <input type="text" class="form-control item-content monitorfile" th:value="${conf.monitorfile}">
+                                    </li>
+                                    <li class="form-inline">
+                                        <button type="button" class="btn btn-default close-window">关闭</button>
+                                        <button type="button" class="btn btn-primary save">保存</button>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/static/js/jquery.min.js}"></script>
+<script th:src="@{/static/js/bootstrap.min.js}"></script>
+<script th:src="@{/static/utils/fetchUtils.js}"></script>
+
+<script type="text/javascript" th:inline="javascript">
+    var ctx = /*[[@{/}]]*/;
+    $('.save').click(function (e) {
+
+        var conf = new Object();
+        conf.name = $(".name").val();
+        conf.ftppath = $(".ftppath").val();
+        conf.monitorfile = $(".monitorfile").val();
+
+        if(!conf.name||!conf.ftppath||!conf.monitorfile){
+            alert("您还有未填写的内容");
+            return;
+        }
+        $.postParams(ctx+"ftp/conf/update",conf,function (e) {
+            if(e.success){
+                alert("保存成功");
+                window.location.href = ctx+"ftp/confs";
+            }
+        })
+    });
+
+    $(".close-window").click(function (e) {
+        window.history.go(-1);
+    })
+
+</script>
+
+</body>
+</html>

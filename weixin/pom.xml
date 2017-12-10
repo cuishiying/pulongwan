@@ -92,6 +92,7 @@
                         <directory>src/main/resources</directory>
                         <excludes>
                             <exclude>product/*</exclude>
+                            <exclude>sit/*</exclude>
                             <exclude>jdbc.properties</exclude>
                         </excludes>
                     </resource>
@@ -111,11 +112,32 @@
                         <!-- 资源根目录排除各环境的配置，使用单独的资源目录来指定 -->
                         <excludes>
                             <exclude>product/*</exclude>
+                            <exclude>sit/*</exclude>
                             <exclude>jdbc.properties</exclude>
                         </excludes>
                     </resource>
                     <resource>
                         <directory>src/main/resources/product</directory>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+
+        <profile>
+            <id>sit</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <!-- 资源根目录排除各环境的配置，使用单独的资源目录来指定 -->
+                        <excludes>
+                            <exclude>product/*</exclude>
+                            <exclude>sit/*</exclude>
+                            <exclude>jdbc.properties</exclude>
+                        </excludes>
+                    </resource>
+                    <resource>
+                        <directory>src/main/resources/sit</directory>
                     </resource>
                 </resources>
             </build>

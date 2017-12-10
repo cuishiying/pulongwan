@@ -1,6 +1,7 @@
 package com.shanglan.pulongwan.service;
 
 import com.shanglan.pulongwan.base.AjaxResponse;
+import com.shanglan.pulongwan.entity.FTPConf;
 import com.shanglan.pulongwan.entity.Field;
 import com.shanglan.pulongwan.config.Constance;
 import com.shanglan.pulongwan.interf.OnSaveMqttDataListener;
@@ -54,10 +55,10 @@ public class AutoService {
      * 矿压监测
      * @throws Exception
      */
-    @PostConstruct
-    public void ftpStart() throws Exception {
-        ftpService.monitorRockPressureFile(filePath,fileName);
-    }
+//    @PostConstruct
+//    public void ftpStart() throws Exception {
+//        ftpService.monitorRockPressureFile("矿压监测");
+//    }
 
 
     /**

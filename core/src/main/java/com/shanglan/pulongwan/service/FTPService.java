@@ -7,6 +7,8 @@ import com.shanglan.pulongwan.dto.RockPressureQueryDTO;
 import com.shanglan.pulongwan.entity.FTPConf;
 import com.shanglan.pulongwan.entity.Field;
 import com.shanglan.pulongwan.entity.RockPressure;
+import com.shanglan.pulongwan.interf.FTPObserver;
+import com.shanglan.pulongwan.interf.OnFileCreateListener;
 import com.shanglan.pulongwan.interf.OnPublishRockPressureListener;
 import com.shanglan.pulongwan.mqtt.ServerMQTT;
 import com.shanglan.pulongwan.repository.FtpConfRepository;
@@ -48,9 +50,21 @@ public class FTPService {
     @Autowired
     private FtpConfRepository ftpConfRepository;
 
+    private FTPObserver rockPressObserver;
+    private FTPObserver safePressObserver;
+    private FTPObserver personPressObserver;
+
+
+
+//    *******************************FTP服务器配置******************************
 
     public FTPConf findFTPConfByName(String name){
         FTPConf conf = ftpConfRepository.findByName(name);
+        return conf;
+    }
+
+    public FTPConf findFTPConfById(Integer id){
+        FTPConf conf = ftpConfRepository.findOne(id);
         return conf;
     }
 
@@ -70,53 +84,113 @@ public class FTPService {
         return AjaxResponse.success();
     }
 
+    public List<FTPConf> findAllConf(){
+        List<FTPConf> list = ftpConfRepository.findAll();
+        return list;
+    }
 
+
+
+    //    *******************************文件监听******************************
 
 
     /**
-     * 监听矿压文件的增删,项目部署后由AutoService自动启动执行
+     * 监听矿压文件的增删
      * @throws Exception
      */
+    public AjaxResponse startFTP(Integer id) throws Exception {
 
-    public AjaxResponse monitorRockPressureFile(String moduleName) throws Exception{
-        FTPConf ftpConf = findFTPConfByName(moduleName);
-        AjaxResponse ajaxResponse = monitorRockPressureFile(ftpConf.getFtppath(), ftpConf.getMonitorfile());
-        return AjaxResponse.success();
+        FTPConf conf = ftpConfRepository.findOne(id);
+        conf.setMonitoring(true);
 
-    }
+        if(StringUtils.equals(conf.getName(),"矿压监测")){
 
-    public AjaxResponse monitorRockPressureFile(String filePath,String fileName) throws Exception{
-        File dir = new File(filePath);
-        // 轮询间隔 1 秒
-        long interval = TimeUnit.SECONDS.toMillis(1);
-        IOFileFilter fileFileter = FileFilterUtils.and(FileFilterUtils.fileFileFilter(),FileFilterUtils.suffixFileFilter(".txt"));
-
-        //观察者
-        FileAlterationObserver observer = new FileAlterationObserver(dir,fileFileter);
-        observer.addListener(new FileAlterationListenerAdaptor() {
-            @Override
-            public void onFileCreate(File file) {
-                super.onFileCreate(file);
-                System.out.println(file.getName()+"==onFileCreate");
-                try {
-                    //如果是监测的矿压数据文件则解析
-                    if(StringUtils.equals(file.getName(),fileName)&&StringUtils.equals(file.getName(),"dev.txt")){
-                        handleRockPressureData(file);
+            if(rockPressObserver==null){
+                rockPressObserver = new FTPObserver(conf.getFtppath(), conf.getMonitorfile(), new OnFileCreateListener() {
+                    @Override
+                    public void onFileCreate(File file) {
+                        try{
+                            handleRockPressureData(file);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
+                });
             }
-        });
+            rockPressObserver.start();
+            return AjaxResponse.success();
 
-        //监听器
-        FileAlterationMonitor monitor = new FileAlterationMonitor(interval,observer);
-        //开始监听
-        monitor.start();
+        }else if(StringUtils.equals(conf.getName(),"安全监测")){
 
-        return AjaxResponse.success();
+            if(safePressObserver==null){
+                safePressObserver = new FTPObserver(conf.getFtppath(), conf.getMonitorfile(), new OnFileCreateListener() {
+                    @Override
+                    public void onFileCreate(File file) {
+                        try{
+                            handleSafeData(file);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+            safePressObserver.start();
+            return AjaxResponse.success();
+        }else if(StringUtils.equals(conf.getName(),"人员定位")){
+
+            if(personPressObserver==null){
+                personPressObserver = new FTPObserver(conf.getFtppath(), conf.getMonitorfile(), new OnFileCreateListener() {
+                    @Override
+                    public void onFileCreate(File file) {
+                        try{
+                            handlePersonData(file);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+            personPressObserver.start();
+            return AjaxResponse.success();
+        }else{
+            return AjaxResponse.fail();
+        }
     }
+
+    /**
+     * 停止监听
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    public AjaxResponse stopFTP(Integer id) throws Exception{
+        FTPConf conf = ftpConfRepository.findOne(id);
+        conf.setMonitoring(false);
+        if(StringUtils.equals(conf.getName(),"矿压监测")){
+
+            if(rockPressObserver!=null){
+                rockPressObserver.stop();
+            }
+            return AjaxResponse.success();
+
+        }else if(StringUtils.equals(conf.getName(),"安全监测")){
+
+            if(safePressObserver!=null){
+                safePressObserver.stop();
+            }
+            return AjaxResponse.success();
+        }else if(StringUtils.equals(conf.getName(),"人员定位")){
+
+            if(personPressObserver!=null){
+                personPressObserver.stop();
+            }
+            return AjaxResponse.success();
+        }else{
+            return AjaxResponse.fail();
+        }
+    }
+
+    //    *******************************矿压监测******************************
 
     /**
      * 解析矿压数据并发布到Apollo
@@ -241,6 +315,18 @@ public class FTPService {
 
             return query.where(predicate.toArray(new Predicate[predicate.size()])).getRestriction();
         };
+    }
+
+    //    *******************************安全监测******************************
+
+    public void handleSafeData(File file) throws Exception {
+
+    }
+
+    //    *******************************人员定位******************************
+
+    public void handlePersonData(File file) throws Exception {
+
     }
 
 }

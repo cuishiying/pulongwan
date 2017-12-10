@@ -21,6 +21,7 @@ public class FTPConf extends BaseEntity{
     private String name;
     private String ftppath;
     private String monitorfile;
+    private boolean monitoring;
 
     public String getName() {
         return name;
@@ -44,5 +45,13 @@ public class FTPConf extends BaseEntity{
 
     public void setMonitorfile(String monitorfile) {
         this.monitorfile = monitorfile;
+    }
+
+    public boolean isMonitoring() {
+        return monitoring;
+    }
+
+    public void setMonitoring(boolean monitoring) {
+        this.monitoring = monitoring;
     }
 }

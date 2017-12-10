@@ -27,8 +27,8 @@ public class TestController {
 
     @Test
     public void test() throws Exception{
-        ftpService.addFTPConf("矿压监测","/Users/cuishiying/2017/04/bk/src/oa/矿压监测/","dev.txt");
-        FTPConf ftpConf = ftpService.findFTPConfByName("矿压监测");
+//        ftpService.addFTPConf("安全监测","/Users/cuishiying/2017/04/bk/src/oa/安全监测/","dev.txt");
+        FTPConf ftpConf = ftpService.findFTPConfByName("安全监测");
         System.out.println("ok");
     }
 

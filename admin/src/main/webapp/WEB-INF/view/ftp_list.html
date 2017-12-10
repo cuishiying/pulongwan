@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<head>
+    <meta charset="UTF-8">
+    <title>FTP配置</title>
+
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/static/css/jquery.datetimepicker.css}">
+    <style type="text/css">
+        .item-name{
+            display: inline-block;
+            min-width: 120px;
+        }
+
+        .form-inline .item-content{
+            width: 50%;
+        }
+        .form-inline{
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="wrapper">
+    <!--<nav th:replace="common/fragment :: sidebar"></nav>-->
+    <div class="main">
+        <div class="main-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">服务器配置</h3>
+                            </div>
+
+                            <div class="panel-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>项目名称</th>
+                                        <th>FTP服务器路径</th>
+                                        <th>监听文件</th>
+                                        <th style="text-align: center">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="item:${list}">
+                                        <td th:text="${item.name}" class="td-ellipsis" style="width: 25%"></td>
+                                        <td th:text="${item.ftppath}" class="td-ellipsis" style="width: 25%"></td>
+                                        <td th:text="${item.monitorfile}" class="td-ellipsis" style="width: 25%"></td>
+                                        <td style="width: 25%;text-align: center">
+                                            <a class="btn btn-sm btn-success ftp-monitoring" th:value="${item.id}" th:text="${item.monitoring?'停止监听':'启动监听'}">启动监听</a>
+                                            <a class="btn btn-sm btn-primary ftp-conf" th:value="${item.id}" th:href="@{/ftp/conf/update/}+${item.id}">修改配置</a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/static/js/jquery.min.js}"></script>
+<script th:src="@{/static/js/bootstrap.min.js}"></script>
+<script th:src="@{/static/utils/fetchUtils.js}"></script>
+
+<script type="text/javascript" th:inline="javascript">
+
+    var ctx = /*[[@{/}]]*/;
+
+    $(".ftp-monitoring").click(function () {
+        if($(this).html()=="启动监听"){
+            $.getData(ctx+"ftp/start/"+$(this).attr("value"),function (e) {
+                if(e.success){
+                    alert("启动成功");
+                    window.location.reload();
+                }else{
+                    alert(e.message)
+                }
+            });
+        }else{
+            $.getData(ctx+"ftp/stop/"+$(this).attr("value"),function (e) {
+                if(e.success){
+                    alert("已停止");
+                    window.location.reload();
+                }else{
+                    alert(e.message)
+                }
+            });
+        }
+
+
+    });
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+</head>
+
+<nav th:fragment="paging">
+	<div class="clearfix page_box merCon_page">
+		<ul class="page activity_page fl clearfix">
+			<li th:if="!${page.first}" class="arr_btn_p" th:onclick="'gotoPage('+${page.number-1}+','+${page.size}+')'"><</li>
+			<li th:if="${page.first}" class="arr_btn_p"><</li>
+			<li th:each="num:${#numbers.sequence(page.number-3<0?0:page.number-3, page.number+3>page.totalPages-1?(page.totalPages>0?page.totalPages-1:0):page.number+3)}"
+				th:class="${page.number==num?'current':''}" th:onclick="'gotoPage('+ ${num} +','+ ${page.size} +')'" th:text="${num+1}">
+			</li>
+			<li th:if="!${page.last}" class="arr_btn_p" th:onclick="'gotoPage('+ ${page.number+1} +','+${page.size}+')'">></li>
+			<li th:if="${page.last}" class="arr_btn_p">></li>
+		</ul>
+		<div class="skip">
+			跳转到<input id="skip" type='text'>页
+		</div>
+		<div id="goPage" class="skipGo">GO</div>
+		<div class="fr">
+			<div th:utext="${'共  '+ page.totalElements + ' 条，分' + page.totalPages + '页    每页显示 10 条'}" th:remove="tag"></div>
+		</div>
+	</div>
+	<script th:src="@{/static/js/jquery.min.js}"></script>
+	<script th:inline="javascript">
+        $(function(){
+            $("#goPage").click(function(){
+                gotoPage($("#skip").val()-1, /*[[${page.size}]]*/);
+            })
+        })
+        function gotoPage(page, size) {
+            changeParameters({"page":page, "size":size})
+        }
+        function changeParameters(params) {
+			/*
+			 * queryParameters -> handles the query string parameters
+			 * queryString -> the query string without the fist '?' character
+			 * re -> the regular expression
+			 * m -> holds the string matching the regular expression
+			 */
+            var queryParameters = {}, queryString = location.search.substring(1),
+                re = /([^&=]+)=([^&]*)/g, m;
+
+            // Creates a map with the query string parameters
+            while (m = re.exec(queryString)) {
+                addParameter(queryParameters, decodeURIComponent(m[1]), decodeURIComponent(m[2]));
+            }
+
+            // Add new parameters or update existing ones
+            for (key in params) {
+                queryParameters[key] = params[key];
+            }
+
+			/*
+			 * Replace the query portion of the URL.
+			 * jQuery.param() -> create a serialized representation of an array or
+			 *     object, suitable for use in a URL query string or Ajax request.
+			 */
+            location.search = $.param(queryParameters, true); // Causes page to reload
+        }
+        function addParameter(queryParameters, paramKey, paramValue) {
+            //Check if multiple parameters has same name
+            if (!queryParameters[paramKey]) {
+                queryParameters[paramKey] = paramValue;
+            } else if (queryParameters[paramKey] instanceof Array) {
+                queryParameters[paramKey].push(paramValue);
+            } else {
+                queryParameters[paramKey] = new Array(queryParameters[paramKey], paramValue);
+            }
+        }
+	</script>
+</nav>
+</html>

@@ -4,6 +4,7 @@ import com.shanglan.pulongwan.base.BaseEntity;
 import com.shanglan.pulongwan.utils.BaseUtils;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 
@@ -11,6 +12,7 @@ import java.util.HashMap;
  * 矿压
  */
 @Entity
+@Table(name = "cnoa_rock_pressure")
 public class RockPressure extends BaseEntity{
 
 
@@ -44,7 +46,7 @@ public class RockPressure extends BaseEntity{
         setReportWay("在线");
         setSubPointType("综采监测");
         setSensorType("综采压力");
-        setTime(BaseUtils.string2Date(map.get("time")));
+        setTime(BaseUtils.string2Date2(map.get("time")));
     }
 
 

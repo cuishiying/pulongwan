@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.UUID;
 
 public class BaseUtils {
 
@@ -34,6 +35,19 @@ public class BaseUtils {
     public static LocalDateTime string2Date(String str){
         Date ts = null;
         SimpleDateFormat myFmt1=new SimpleDateFormat("yy/MM/dd HH:mm:ss");
+        try {
+            ts = myFmt1.parse(str);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Instant instant = Instant.ofEpochMilli(ts.getTime());
+        LocalDateTime res = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+        return res;
+    }
+    public static LocalDateTime string2Date2(String str){
+        Date ts = null;
+        SimpleDateFormat myFmt1=new SimpleDateFormat("yy-MM-dd HH:mm:ss");
         try {
             ts = myFmt1.parse(str);
         } catch (ParseException e) {
@@ -88,4 +102,5 @@ public class BaseUtils {
         T t = gson.fromJson(gsonString, cls);
         return t;
     }
+
 }

@@ -55,10 +55,13 @@ public class AutoService {
      * 矿压监测
      * @throws Exception
      */
-//    @PostConstruct
-//    public void ftpStart() throws Exception {
-//        ftpService.monitorRockPressureFile("矿压监测");
-//    }
+    @PostConstruct
+    public void ftpStart() throws Exception {
+        List<FTPConf> list = ftpService.findAllConf();
+        for (int i=0;i<list.size();i++){
+            ftpService.startFTP(list.get(i).getId());
+        }
+    }
 
 
     /**

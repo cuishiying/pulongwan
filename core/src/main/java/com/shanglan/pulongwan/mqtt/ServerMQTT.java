@@ -41,7 +41,7 @@ public class ServerMQTT {
         // 设置超时时间
         options.setConnectionTimeout(100);
         // 设置会话心跳时间
-        options.setKeepAliveInterval(5);
+        options.setKeepAliveInterval(10);
         options.setAutomaticReconnect(true);
         client.setCallback(new PushCallback(this));
         instance = this;

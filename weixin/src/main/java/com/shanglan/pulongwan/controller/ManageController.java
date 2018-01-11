@@ -1,6 +1,7 @@
 package com.shanglan.pulongwan.controller;
 
 import com.shanglan.pulongwan.base.AjaxResponse;
+import com.shanglan.pulongwan.config.Constance;
 import com.shanglan.pulongwan.dto.QueryDTO;
 import com.shanglan.pulongwan.entity.Field;
 import com.shanglan.pulongwan.entity.Topic;
@@ -49,7 +50,7 @@ public class ManageController {
     public ModelAndView deployView(String username,String truename,@PageableDefault Pageable pageable,HttpServletRequest request) throws Exception {
         if(StringUtils.isNotEmpty(username)&&StringUtils.isNotEmpty(truename)){
             request.getSession().invalidate();
-            request.getSession().setAttribute("uid", "uid"+username.hashCode()+String.valueOf( Math.random()).hashCode());
+            request.getSession().setAttribute("uid", "uid"+ Constance.getUUid());
         }else{
             request.getSession().invalidate();
             request.getSession().setAttribute("uid","uid"+String.valueOf( Math.random()).hashCode());

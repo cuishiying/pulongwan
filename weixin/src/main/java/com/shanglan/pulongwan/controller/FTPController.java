@@ -1,10 +1,11 @@
 package com.shanglan.pulongwan.controller;
 
 import com.shanglan.pulongwan.base.AjaxResponse;
+import com.shanglan.pulongwan.config.Constance;
+import com.shanglan.pulongwan.dto.PersonLocationQueryDTO;
 import com.shanglan.pulongwan.dto.RockPressureQueryDTO;
-import com.shanglan.pulongwan.entity.FTPConf;
-import com.shanglan.pulongwan.entity.RockPressure;
-import com.shanglan.pulongwan.entity.Topic;
+import com.shanglan.pulongwan.dto.SafeMonitorQueryDTO;
+import com.shanglan.pulongwan.entity.*;
 import com.shanglan.pulongwan.service.FTPService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +39,11 @@ public class FTPController {
         String uid = (String) request.getSession().getAttribute("uid");
         if(StringUtils.isEmpty(uid)){
             request.getSession().invalidate();
-            request.getSession().setAttribute("uid","uid"+String.valueOf( Math.random()).hashCode());
+            request.getSession().setAttribute("uid","uid"+"rockPressure"+ Constance.getUUid());
             uid = (String) request.getSession().getAttribute("uid");
         }
 
-        Topic topic = new Topic("矿压监测","矿压监测");
+        Topic topic = new Topic("矿压监测","rockPressure");
 
 
         model.addObject("list",rockPressures);
@@ -55,6 +56,74 @@ public class FTPController {
         ModelAndView model = new ModelAndView("rockPressure_history");
         Page<RockPressure> rockPressures = ftpService.findRockPressureData(queryDTO,pageable);
         model.addObject("page",rockPressures);
+        model.addObject("queryDTO",queryDTO);
+        return model;
+    }
+
+    /**
+     * 安全监测页面
+     * @return
+     */
+    @RequestMapping(path = "/safeMonitor", method = RequestMethod.GET)
+    public ModelAndView safeMonitorView(RockPressureQueryDTO queryDTO, @PageableDefault Pageable pageable,HttpServletRequest request){
+        ModelAndView model = new ModelAndView("safeMonitor");
+
+        List<SafeMonitor> rockPressures = ftpService.initSafeMonitorData();
+
+        String uid = (String) request.getSession().getAttribute("uid");
+        if(StringUtils.isEmpty(uid)){
+            request.getSession().invalidate();
+            request.getSession().setAttribute("uid","uid"+"safeMonitor"+ Constance.getUUid());
+            uid = (String) request.getSession().getAttribute("uid");
+        }
+
+        Topic topic = new Topic("安全监测","safeMonitor");
+
+
+        model.addObject("list",rockPressures);
+        model.addObject("topic",topic);
+        model.addObject("uid",uid);
+        return model;
+    }
+    @RequestMapping(path = "/safeMonitor/history", method = RequestMethod.GET)
+    public ModelAndView safeMonitorHistoryView(SafeMonitorQueryDTO queryDTO, @PageableDefault Pageable pageable, HttpServletRequest request){
+        ModelAndView model = new ModelAndView("safeMonitor_history");
+        Page<SafeMonitor> rockPressures = ftpService.findSafeMonitorData(queryDTO,pageable);
+        model.addObject("page",rockPressures);
+        model.addObject("queryDTO",queryDTO);
+        return model;
+    }
+    /**
+     * 人员定位页面
+     * @return
+     */
+    @RequestMapping(path = "/personLocation", method = RequestMethod.GET)
+    public ModelAndView personLocationView(RockPressureQueryDTO queryDTO, @PageableDefault Pageable pageable,HttpServletRequest request){
+        ModelAndView model = new ModelAndView("personLocation");
+
+        List<PersonLocation> rockPressures = ftpService.initPersonLocationData();
+
+        String uid = (String) request.getSession().getAttribute("uid");
+        if(StringUtils.isEmpty(uid)){
+            request.getSession().invalidate();
+            request.getSession().setAttribute("uid","uid"+"personLocation"+ Constance.getUUid());
+            uid = (String) request.getSession().getAttribute("uid");
+        }
+
+        Topic topic = new Topic("人员定位","personLocation");
+
+
+        model.addObject("list",rockPressures);
+        model.addObject("topic",topic);
+        model.addObject("uid",uid);
+        return model;
+    }
+    @RequestMapping(path = "/personLocation/history", method = RequestMethod.GET)
+    public ModelAndView personLocationHistoryView(PersonLocationQueryDTO queryDTO, @PageableDefault Pageable pageable, HttpServletRequest request){
+        ModelAndView model = new ModelAndView("personLocation_history");
+        Page<PersonLocation> rockPressures = ftpService.findPersonLocationData(queryDTO,pageable);
+        model.addObject("page",rockPressures);
+        model.addObject("queryDTO",queryDTO);
         return model;
     }
 

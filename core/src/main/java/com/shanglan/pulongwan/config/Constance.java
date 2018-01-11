@@ -2,10 +2,7 @@ package com.shanglan.pulongwan.config;
 
 import com.shanglan.pulongwan.entity.Field;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by cuishiying on 2017/7/25.
@@ -16,7 +13,8 @@ public class Constance {
     private static boolean RockPressureFlat = true;
 //    private static String apollo_host = "tcp://localhost:61613";
     private static String apollo_host = "tcp://10.38.8.201:61613";
-    private static String apollo_clientid = "pulongwan_clientid";
+    private static String apollo_clientid = "pulongwan_server_clientid";
+    private static String sub_clientid = "pulongwan_client_clientid";
     private static int socket_port = 10000;
 
     private static HashMap fieldConfig = new HashMap();//主题
@@ -74,11 +72,19 @@ public class Constance {
     }
 
     public static String getApollo_clientid() {
-        return apollo_clientid;
+        return apollo_clientid+getUUid();
     }
 
     public static void setApollo_clientid(String apollo_clientid) {
         Constance.apollo_clientid = apollo_clientid;
+    }
+
+    public static String getSub_clientid() {
+        return sub_clientid+getUUid();
+    }
+
+    public static void setSub_clientid(String sub_clientid) {
+        Constance.sub_clientid = sub_clientid;
     }
 
     public static int getSocket_port() {
@@ -92,6 +98,8 @@ public class Constance {
     public static void setFieldConfig(HashMap fieldConfig) {
         Constance.fieldConfig = fieldConfig;
     }
+
+
 
     //根据遥测号获得主题
     public static String getFieldConfig(String key){
@@ -127,5 +135,9 @@ public class Constance {
 
     public static void setTopicConfig(HashMap topicConfig) {
         Constance.topicConfig = topicConfig;
+    }
+
+    public static String getUUid(){
+        return UUID.randomUUID().toString().replaceAll("-", "");
     }
 }

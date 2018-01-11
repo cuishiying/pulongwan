@@ -4,12 +4,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
-public class RockPressureQueryDTO {
+public class PersonLocationQueryDTO {
 
     private String keyword;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate queryDate;
+//    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+//    private LocalDate queryDate;
 
     public String getKeyword() {
         return keyword;
@@ -19,11 +19,11 @@ public class RockPressureQueryDTO {
         this.keyword = keyword;
     }
 
-    public LocalDate getQueryDate() {
-        return queryDate;
-    }
-
-    public void setQueryDate(LocalDate queryDate) {
-        this.queryDate = queryDate;
-    }
+//    public LocalDate getQueryDate() {
+//        return queryDate;
+//    }
+//
+//    public void setQueryDate(LocalDate queryDate) {
+//        this.queryDate = queryDate;
+//    }
 }

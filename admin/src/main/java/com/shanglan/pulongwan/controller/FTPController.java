@@ -1,6 +1,7 @@
 package com.shanglan.pulongwan.controller;
 
 import com.shanglan.pulongwan.base.AjaxResponse;
+import com.shanglan.pulongwan.config.Constance;
 import com.shanglan.pulongwan.dto.RockPressureQueryDTO;
 import com.shanglan.pulongwan.entity.FTPConf;
 import com.shanglan.pulongwan.entity.RockPressure;
@@ -40,7 +41,7 @@ public class FTPController {
         String uid = (String) request.getSession().getAttribute("uid");
         if(StringUtils.isEmpty(uid)){
             request.getSession().invalidate();
-            request.getSession().setAttribute("uid","uid"+String.valueOf( Math.random()).hashCode());
+            request.getSession().setAttribute("uid","uid"+ Constance.getUUid());
             uid = (String) request.getSession().getAttribute("uid");
         }
 

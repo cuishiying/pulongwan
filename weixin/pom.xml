@@ -97,7 +97,7 @@
                         </excludes>
                     </resource>
                     <resource>
-                        <directory>src/main/resources/jdbc.properties</directory>
+                        <directory>src/main/resources</directory>
                     </resource>
                 </resources>
             </build>

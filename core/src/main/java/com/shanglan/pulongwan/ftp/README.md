@@ -8,7 +8,10 @@ FTP测试客户端：FileZilla
 
 
 ##需开发模块
-矿压监测、安全监测、人员定位
+
+矿压监测    D:\location\rockpressure
+安全监测    D:\location\safemonitor
+人员定位    D:\location\personlocation
 
 
 ##矿压监测方案说明：
@@ -84,3 +87,16 @@ Ftp.ini:
     bye
 
 
+
+人员定位IP：10.38.129.7
+
+安全监测IP：10.38.129.5
+
+
+
+每次维护服务器需：
+
+开启双击热备
+启动apollo
+启动nginx
+启动FTP

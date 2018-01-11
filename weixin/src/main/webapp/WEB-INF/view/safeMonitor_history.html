@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>安全监测历史数据</title>
+
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/static/css/index.css}">
+    <link rel="stylesheet" th:href="@{/static/css/jquery.datetimepicker.css}">
+
+    <style type="text/css">
+        .table th, .table td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="">
+    <div class="panel">
+        <div class="panel-heading">
+            <h3 class="panel-title">安全监测历史数据</h3>
+        </div>
+        <div style="padding: 15px">
+            <form th:action="@{/ftp/safeMonitor/history}" method="get">
+                <div class="panel-query form-inline">
+                    <input type="text" name="keyword" class="form-control" placeholder="传感器编号、安装地点..." th:value="${queryDTO.keyword}"/>
+                    <!--<input class="form-control date text-center time_input" type="text" placeholder="选择日期" name="queryDate" th:value="${queryDTO.queryDate}" />-->
+                    <button type="submit" class="btn btn-primary">搜索</button>
+                </div>
+            </form>
+        </div>
+        <div class="panel-body no-padding">
+            <div class="table-responsive">
+                <table class="table table-striped" >
+                    <thead>
+                    <tr>
+                        <th class="text-center">分站编号</th>
+                        <th class="text-center">传感器编号</th>
+                        <th class="text-center">安装地点</th>
+                        <th class="text-center">监测值</th>
+                        <th class="text-center">名称</th>
+                        <th class="text-center">类型</th>
+                        <th class="text-center">单位</th>
+                        <th class="text-center">量程下限</th>
+                        <th class="text-center">量程上限</th>
+                        <th class="text-center">报警下限</th>
+                        <th class="text-center">报警上限</th>
+                        <th class="text-center">断电值</th>
+                        <th class="text-center">复电值</th>
+                    </tr>
+                    </thead>
+                    <tbody class="table-content">
+                        <tr class="text-center item" th:each="item:${page.content}">
+                            <td th:text="${item.codeIndex}"></td>
+                            <td th:text="${item.sensorCode}"></td>
+                            <td th:text="${item.sensorRegion}"></td>
+                            <td th:text="${item.sensorValue}"></td>
+                            <td th:text="${item.name}"></td>
+                            <td th:text="${item.sensorType}"></td>
+                            <td th:text="${item.unit}"></td>
+                            <td th:text="${item.rangeLower}"></td>
+                            <td th:text="${item.rangeHigher}"></td>
+                            <td th:text="${item.alarmLower}"></td>
+                            <td th:text="${item.alarmHigher}"></td>
+                            <td th:text="${item.powerOff}"></td>
+                            <td th:text="${item.powerOn}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <nav th:replace="common/page::paging"></nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/static/js/jquery.min.js}"></script>
+<script th:src="@{/static/js/bootstrap.min.js}"></script>
+<script th:src="@{/static/js/jquery-1.7.2.min.js}"></script>
+<script th:src="@{/static/js/jquery.datetimepicker.full.js}"></script>
+<script th:src="@{/static/config/config.js}"></script>
+
+<script type="text/javascript" th:inline="javascript">
+    var ctx = /*[[@{/}]]*/;
+
+    $('.time_input').datetimepicker({
+        lang:"ch", //语言选择中文 注：旧版本 新版方法：$.datetimepicker.setLocale('ch');
+        format:"Y-m-d",
+        timepicker:false,
+        yearStart:2000,
+        yearEnd:2050,
+        todayButton:true
+    });
+
+</script>
+</body>
+</html>

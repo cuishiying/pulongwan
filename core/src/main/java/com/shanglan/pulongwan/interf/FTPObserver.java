@@ -21,11 +21,16 @@ public class FTPObserver {
     // 轮询间隔 1 秒
     long interval = TimeUnit.SECONDS.toMillis(1);
 
-    public FTPObserver(String filePath,String monitorFileName,OnFileCreateListener onFileCreateListener) throws Exception {
+    public File getDir() {
+        return dir;
+    }
+
+    public FTPObserver(String filePath, String monitorFileName, String suffix, OnFileCreateListener onFileCreateListener) throws Exception {
 
         this.dir = new File(filePath);
-        this.fileFileter = FileFilterUtils.and(FileFilterUtils.fileFileFilter(),FileFilterUtils.suffixFileFilter(".txt"));
-//        this.initFile = new File(filePath,monitorFileName);
+        if(suffix!=null){
+            this.fileFileter = FileFilterUtils.and(FileFilterUtils.fileFileFilter(),FileFilterUtils.suffixFileFilter(suffix));
+        }
 
 
         adaptor = new FileAlterationListenerAdaptor(){
@@ -33,18 +38,32 @@ public class FTPObserver {
             public void onFileCreate(File file) {
                 super.onFileCreate(file);
                 System.out.println(file.getName()+"==onFileCreate");
-                handleData(file,monitorFileName,onFileCreateListener);
+                if(suffix!=null){
+                    handleData(file,monitorFileName,onFileCreateListener);
+                }else{
+                    //人员定位
+                    handlePersonData(file,onFileCreateListener);
+                }
             }
 
             @Override
             public void onFileChange(File file) {
                 super.onFileChange(file);
                 System.out.println(file.getName()+"==onFileChange");
-                handleData(file,monitorFileName,onFileCreateListener);
+                if(suffix!=null){
+                    handleData(file,monitorFileName,onFileCreateListener);
+                }else{
+                    //人员定位
+                    handlePersonData(file,onFileCreateListener);
+                }
             }
         };
         if(observer==null){
-            observer = new FileAlterationObserver(dir,fileFileter);
+            if(suffix!=null){
+                observer = new FileAlterationObserver(dir,fileFileter);
+            }else{
+                observer = new FileAlterationObserver(dir);
+            }
         }
         //监听器
         monitor = new FileAlterationMonitor(interval);
@@ -52,13 +71,27 @@ public class FTPObserver {
         monitor.start();
     }
 
-    public void handleData(File file,String monitorFileName,OnFileCreateListener onFileCreateListener){
+    public void handlePersonData(File file,OnFileCreateListener onFileCreateListener){
         try {
-            //如果是监测的矿压数据文件则解析
-            if(StringUtils.equals(file.getName(),monitorFileName)){
+            //如果是监测的人员定位数据文件则解析
+            if(file.getName().contains("RYSS")){
                 if(null!=onFileCreateListener){
                     onFileCreateListener.onFileCreate(file);
                 }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handleData(File file,String monitorFileName,OnFileCreateListener onFileCreateListener){
+        try {
+            //如果是监测的矿压数据文件则解析
+//            if(StringUtils.equals(file.getName(),monitorFileName)){
+//            }
+            if(null!=onFileCreateListener){
+                onFileCreateListener.onFileCreate(file);
             }
         } catch (Exception e) {
             e.printStackTrace();

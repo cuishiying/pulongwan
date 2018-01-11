@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>人员定位历史数据</title>
+
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/static/css/index.css}">
+    <link rel="stylesheet" th:href="@{/static/css/jquery.datetimepicker.css}">
+
+    <style type="text/css">
+        .table th, .table td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="">
+    <div class="panel">
+        <div class="panel-heading">
+            <h3 class="panel-title">人员定位历史数据</h3>
+        </div>
+        <div style="padding: 15px">
+            <form th:action="@{/ftp/personLocation/history}" method="get">
+                <div class="panel-query form-inline">
+                    <input type="text" name="keyword" class="form-control" placeholder="姓名、班组..." th:value="${queryDTO.keyword}"/>
+                    <!--<input class="form-control date text-center time_input" type="text" placeholder="选择日期" name="queryDate" th:value="${queryDTO.queryDate}" />-->
+                    <button type="submit" class="btn btn-primary">搜索</button>
+                </div>
+            </form>
+        </div>
+        <div class="panel-body no-padding">
+            <div class="table-responsive">
+                <table class="table table-striped" >
+                    <thead>
+                    <tr>
+                        <th class="text-center">卡号</th>
+                        <th class="text-center">姓名</th>
+                        <th class="text-center">职务/工种</th>
+                        <th class="text-center">班组/区队</th>
+                        <th class="text-center">所在地域</th>
+                        <th class="text-center">来向区域</th>
+                        <th class="text-center">所在区域</th>
+                        <th class="text-center">入站时间</th>
+                        <th class="text-center">是否下井</th>
+                        <th class="text-center">入井时间</th>
+                    </tr>
+                    </thead>
+                    <tbody class="table-content">
+                        <tr class="text-center item" th:each="item:${page.content}">
+                            <td th:text="${item.codeIndex}"></td>
+                            <td th:text="${item.name}"></td>
+                            <td th:text="${item.duty}"></td>
+                            <td th:text="${item.groupTeam}"></td>
+                            <td th:text="${item.addr1}"></td>
+                            <td th:text="${item.addr2}"></td>
+                            <td th:text="${item.addr3}"></td>
+                            <td th:text="${item.inboxTime}"></td>
+                            <td th:text="${item.ynUnderground}"></td>
+                            <td th:text="${item.undergroundTime}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <nav th:replace="common/page::paging"></nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/static/js/jquery.min.js}"></script>
+<script th:src="@{/static/js/bootstrap.min.js}"></script>
+<script th:src="@{/static/js/jquery-1.7.2.min.js}"></script>
+<script th:src="@{/static/js/jquery.datetimepicker.full.js}"></script>
+<script th:src="@{/static/config/config.js}"></script>
+
+<script type="text/javascript" th:inline="javascript">
+    var ctx = /*[[@{/}]]*/;
+
+    $('.time_input').datetimepicker({
+        lang:"ch", //语言选择中文 注：旧版本 新版方法：$.datetimepicker.setLocale('ch');
+        format:"Y-m-d",
+        timepicker:false,
+        yearStart:2000,
+        yearEnd:2050,
+        todayButton:true
+    });
+
+</script>
+</body>
+</html>

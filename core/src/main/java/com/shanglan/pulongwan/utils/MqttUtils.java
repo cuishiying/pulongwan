@@ -1,7 +1,9 @@
 package com.shanglan.pulongwan.utils;
 
 import com.shanglan.pulongwan.entity.Field;
+import com.shanglan.pulongwan.entity.PersonLocation;
 import com.shanglan.pulongwan.entity.RockPressure;
+import com.shanglan.pulongwan.entity.SafeMonitor;
 import com.shanglan.pulongwan.interf.OnSaveMqttDataListener;
 import com.shanglan.pulongwan.mqtt.ServerMQTT;
 import org.apache.commons.lang3.StringUtils;
@@ -44,7 +46,7 @@ public class MqttUtils {
         try {
             if(data!=null&&data.size()>0){
                 for(int i=0;i<data.size();i++){
-                    String topic = data.get(i).getSensorCode();
+                    String topic = "rockPressure/"+data.get(i).getSensorCode();
                     RockPressure rockPressure = data.get(i);
                     String message = BaseUtils.createGsonString(rockPressure);
                     if(StringUtils.isEmpty(topic)|| Strings.containsAny(topic, "#+")){
@@ -52,6 +54,46 @@ public class MqttUtils {
                     }
                     publish(topic,message);
                 }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 发布安全检测主题
+     * @param data
+     */
+    public static void publishSafe(List<SafeMonitor> data){
+        BaseUtils.debug(data.size());
+        try {
+            if(data!=null&&data.size()>0){
+                String topic = "safeMonitor";
+                String message = BaseUtils.createGsonString(data);
+                if(StringUtils.isEmpty(topic)|| Strings.containsAny(topic, "#+")){
+                    return;
+                }
+                publish(topic,message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 发布人员定位主题
+     * @param data
+     */
+    public static void publishPerson(List<PersonLocation> data){
+        BaseUtils.debug(data.size());
+        try {
+            if(data!=null&&data.size()>0){
+                String topic = "personLocation";
+                String message = BaseUtils.createGsonString(data);
+                if(StringUtils.isEmpty(topic)|| Strings.containsAny(topic, "#+")){
+                    return;
+                }
+                publish(topic,message);
             }
         } catch (Exception e) {
             e.printStackTrace();

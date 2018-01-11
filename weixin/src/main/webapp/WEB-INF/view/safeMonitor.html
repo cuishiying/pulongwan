@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>安全监测</title>
+
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.css}">
+</head>
+<body>
+<div class="main">
+    <div class="panel">
+        <div class="panel-heading">
+            <h3 class="panel-title">安全监测</h3>
+        </div>
+        <div style="padding-left: 15px">
+            <a class="btn btn-primary" th:href="@{/ftp/safeMonitor/history}">历史纪录</a>
+        </div>
+        <div class="panel-body no-padding">
+            <div class="table-responsive">
+                <table class="table table-striped" >
+                    <thead>
+                    <tr>
+                        <th class="text-center">分站编号</th>
+                        <th class="text-center">传感器编号</th>
+                        <th class="text-center">安装地点</th>
+                        <th class="text-center">监测值</th>
+                        <th class="text-center">名称</th>
+                        <th class="text-center">类型</th>
+                        <th class="text-center">单位</th>
+                        <th class="text-center">量程下限</th>
+                        <th class="text-center">量程上限</th>
+                        <th class="text-center">报警下限</th>
+                        <th class="text-center">报警上限</th>
+                        <th class="text-center">断电值</th>
+                        <th class="text-center">复电值</th>
+                    </tr>
+                    </thead>
+                    <tbody class="table-content">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/static/js/jquery.min.js}"></script>
+<script th:src="@{/static/js/bootstrap.min.js}"></script>
+<script th:src="@{/static/js/jquery-1.7.2.min.js}"></script>
+<script th:src="@{/static/js/paho-mqtt.js}"></script>
+<script th:src="@{/static/config/config.js}"></script>
+
+<script type="text/javascript" th:inline="javascript">
+    var ctx = /*[[@{/}]]*/;
+    var _topic= /*[[${topic.topic}]]*/;
+    var uid= /*[[${uid}]]*/;
+
+    var hostname = config.apollo_host,
+        port = config.apollo_port,
+        clientId = uid,
+        timeout = 2000,
+        userName = 'admin',
+        password = 'password',
+        reconnectTimeout = 3000,
+        topic = _topic+'/#';
+
+
+    function MQTTconnect(){
+        client = new Paho.MQTT.Client(hostname, Number(port), clientId);
+        var options = {
+            timeout:timeout,
+            userName: userName,
+            password: password,
+            keepAliveInterval:10,
+            reconnect:false,
+            onSuccess: onConnect,
+            onFailure: function (message) {
+                console.log("onFailure==",message);
+                setTimeout(MQTTconnect, reconnectTimeout);
+            }
+        };
+        client.onConnectionLost = onConnectionLost;
+        client.onMessageArrived = onMessageArrived;
+        client.connect(options);
+
+    }
+
+    function onConnect() {
+        console.log("==conn=="+topic);
+        client.subscribe(topic);
+    }
+
+    function onConnectionLost(response) {
+        console.log("onConnectionLost===safe==",response);
+//        setTimeout(MQTTconnect, reconnectTimeout);
+    };
+    function onMessageArrived(message) {
+        var topic = message.destinationName;
+        var payload = JSON.parse(message.payloadString);
+//        console.log("订阅消息:==== "+topic+"====",payload);
+        $(".table-content").empty();
+        for (var i=0;i<payload.length;i++){
+            $(".table-content").append(
+                "<tr class=\"text-center item\">"
+                +"<td>"+payload[i].codeIndex+"</td>"
+                +"<td>"+payload[i].sensorCode+"</td>"
+                +"<td>"+payload[i].sensorRegion+"</td>"
+                +"<td>"+payload[i].sensorValue+"</td>"
+                +"<td>"+payload[i].name+"</td>"
+                +"<td>"+payload[i].sensorType+"</td>"
+                +"<td>"+payload[i].unit+"</td>"
+                +"<td>"+payload[i].rangeLower+"</td>"
+                +"<td>"+payload[i].rangeHigher+"</td>"
+                +"<td>"+payload[i].alarmLower+"</td>"
+                +"<td>"+payload[i].alarmHigher+"</td>"
+                +"<td>"+payload[i].powerOff+"</td>"
+                +"<td>"+payload[i].powerOn+"</td>"
+                +"</tr>"
+            );
+        }
+    };
+
+
+    MQTTconnect();
+
+    window.onunload = function() {
+        console.log("===unsubscribe====")
+
+        try {
+            if(client.isConnected()){
+                client.unsubscribe(topic);
+                client.disconnect();
+            }
+        }catch(e) {
+            console.log(e)
+        }
+    };
+
+</script>
+</body>
+</html>
